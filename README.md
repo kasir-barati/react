@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+- Create new component: `pnpx generate-react-cli component Square --withStyle=true`
+
 ## Available Scripts
 
 In the project directory, you can run:
