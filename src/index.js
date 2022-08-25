@@ -5,9 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+/**
+ * Strict mode can’t automatically detect side effects for you, but it can help you spot them by making them a little more deterministic. This is done by intentionally double-invoking these functions:
+ * - Class component: constructor, render, shouldComponentUpdate, getDerivedStateFromProps
+ * - Function component: its body,
+ * - State updater functions (the first argument to setState)
+ * - Functions passed to useState, useMemo, or useReducer
+ * This only applies to development mode. Lifecycles will not be double-invoked in production mode.
+ */
 root.render(
     <React.StrictMode>
-        <App />
+        <App />,
     </React.StrictMode>,
 );
 

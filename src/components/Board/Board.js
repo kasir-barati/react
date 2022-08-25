@@ -23,24 +23,24 @@ const Board = () => {
             }, 0);
         }
     });
-
+    // These two are basically equivalent
     // Handle winner case
-    useEffect(() => {
+    setTimeout(() => {
+        console.log(squares);
         const result = determineWinner(squares);
 
         if (typeof result === 'string') {
-            setTimeout(() => {
-                alert(`${result} won`);
-                setSquares(new Array(9).fill(''));
-            }, 0);
+            alert(`${result} won`);
+            setSquares(new Array(9).fill(''));
         }
-    });
+    }, 0);
     /**
      *
      * @param {string} square
      * @param {number} index
      */
     function renderSquare(square, index) {
+        console.log(index);
         return (
             <Square
                 key={index}
