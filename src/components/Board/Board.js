@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 // Module not found: Error: Can't resolve 'prop-types' in '/home/kasir/my-react-journey/src/components/Square'
 // import PropTypes from 'prop-types';
 import { determineWinner } from './DetermineWinner';
-import './Board.css';
+import style from './Board.module.css';
 import Square from '../Square/Square';
 
 const Board = () => {
@@ -64,7 +64,7 @@ const Board = () => {
     }
 
     return (
-        <div className="Board">
+        <div className={style.Board}>
             {squares.map((square, index) => (
                 <Fragment>
                     {renderSquare(square, index)}
