@@ -31,7 +31,13 @@ export default function AppFunction(props) {
         <div>
             {personsState.map(({ id, name, age }) => (
                 <>
-                    <Person key={id} name={name} age={age} />
+                    <Person
+                        id={id}
+                        key={id}
+                        name={name}
+                        age={age}
+                        onClickIncreaseAge={increaseAge}
+                    />
                     <button onClick={() => increaseAge(id)}>
                         Increase age
                     </button>

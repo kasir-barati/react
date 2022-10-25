@@ -33,7 +33,13 @@ export default class App extends Component {
             <div>
                 {this.state.persons.map(({ id, name, age }) => (
                     <>
-                        <Person key={id} name={name} age={age} />
+                        <Person
+                            id={id}
+                            key={id}
+                            name={name}
+                            age={age}
+                            onClickIncreaseAge={this.increaseAge}
+                        />
                         <button onClick={() => this.increaseAge(id)}>
                             Increase age
                         </button>

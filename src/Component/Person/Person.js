@@ -6,14 +6,16 @@ import React from 'react';
 /**
  *
  * @param {object} props
+ * @param {string} props.id
  * @param {string} props.name
  * @param {number} props.age
+ * @param {any} props.onClickIncreaseAge
  * @returns
  */
 export default function Board(props) {
-    const { age, name } = props;
+    const { id, age, name, onClickIncreaseAge } = props;
     return (
-        <div>
+        <div onClick={() => onClickIncreaseAge(id)}>
             I'm {name} and {age} years old.
         </div>
     );
