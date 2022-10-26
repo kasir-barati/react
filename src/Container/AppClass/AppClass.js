@@ -39,7 +39,12 @@ export default class App extends Component {
                             name={name}
                             age={age}
                             onClickIncreaseAge={this.increaseAge}
-                        />
+                        >
+                            <p>
+                                This is a children tag inside the
+                                Person component.
+                            </p>
+                        </Person>
                         <button onClick={() => this.increaseAge(id)}>
                             Increase age
                         </button>

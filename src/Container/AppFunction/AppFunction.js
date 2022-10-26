@@ -37,7 +37,12 @@ export default function AppFunction(props) {
                         name={name}
                         age={age}
                         onClickIncreaseAge={increaseAge}
-                    />
+                    >
+                        <p>
+                            This is a children tag inside the Person
+                            component.
+                        </p>
+                    </Person>
                     <button onClick={() => increaseAge(id)}>
                         Increase age
                     </button>
