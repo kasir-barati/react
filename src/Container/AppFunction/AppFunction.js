@@ -36,14 +36,14 @@ export default function AppFunction(props) {
                         key={id}
                         name={name}
                         age={age}
-                        increaseAgeHandler={increaseAge}
+                        onClickIncreaseAge={increaseAgeHandler}
                     >
                         <p>
                             This is a children tag inside the Person
                             component.
                         </p>
                     </Person>
-                    <button onClick={() => increaseAge(id)}>
+                    <button onClick={() => increaseAgeHandler(id)}>
                         Increase age
                     </button>
                 </>
@@ -55,7 +55,7 @@ export default function AppFunction(props) {
      *
      * @param {string} id
      */
-    function increaseAge(id) {
+    function increaseAgeHandler(id) {
         const personIndex = personsState.findIndex(
             (person) => person.id === id,
         );

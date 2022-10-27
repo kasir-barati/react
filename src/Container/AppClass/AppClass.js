@@ -19,7 +19,7 @@ export default class App extends Component {
      *
      * @param {string} id
      */
-    increaseAge(id) {
+    increaseAgeHandler(id) {
         const personIndex = this.state.persons.findIndex(
             (person) => person.id === id,
         );
@@ -38,14 +38,20 @@ export default class App extends Component {
                             key={id}
                             name={name}
                             age={age}
-                            increaseAgeHandler={this.increaseAge}
+                            onClickIncreaseAge={
+                                this.increaseAgeHandler
+                            }
                         >
                             <p>
                                 This is a children tag inside the
                                 Person component.
                             </p>
                         </Person>
-                        <button onClick={() => this.increaseAge(id)}>
+                        <button
+                            onClick={() =>
+                                this.increaseAgeHandler(id)
+                            }
+                        >
                             Increase age
                         </button>
                     </>

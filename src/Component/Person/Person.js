@@ -10,15 +10,15 @@ import React from 'react';
  * @param {string} props.id
  * @param {string} props.name
  * @param {number} props.age
- * @param {any} props.increaseAgeHandler
+ * @param {any} props.onClickIncreaseAge
  * @param {any} props.children
  * @returns
  */
 export default function Person(props) {
-    const { id, age, name, increaseAgeHandler, children } = props;
+    const { id, age, name, onClickIncreaseAge, children } = props;
 
     return (
-        <div onClick={() => increaseAgeHandler(id)}>
+        <div onClick={() => onClickIncreaseAge(id)}>
             <p>
             I'm {name} and {age} years old.
             </p>
