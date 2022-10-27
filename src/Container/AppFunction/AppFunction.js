@@ -36,7 +36,7 @@ export default function AppFunction(props) {
                         key={id}
                         name={name}
                         age={age}
-                        onClickIncreaseAge={increaseAge}
+                        increaseAgeHandler={increaseAge}
                     >
                         <p>
                             This is a children tag inside the Person

@@ -38,7 +38,7 @@ export default class App extends Component {
                             key={id}
                             name={name}
                             age={age}
-                            onClickIncreaseAge={this.increaseAge}
+                            increaseAgeHandler={this.increaseAge}
                         >
                             <p>
                                 This is a children tag inside the
