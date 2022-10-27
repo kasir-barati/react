@@ -11,18 +11,36 @@ import React from 'react';
  * @param {string} props.name
  * @param {number} props.age
  * @param {any} props.onClickIncreaseAge
+ * @param {any} props.onChangeReplaceName
  * @param {any} props.children
  * @returns
  */
 export default function Person(props) {
-    const { id, age, name, onClickIncreaseAge, children } = props;
+    const {
+        id,
+        age,
+        name,
+        onClickIncreaseAge,
+        onChangeReplaceName,
+        children,
+    } = props;
 
     return (
         <div onClick={() => onClickIncreaseAge(id)}>
             <p>
-            I'm {name} and {age} years old.
+                I'm {name} and {age} years old.
             </p>
             {children}
+            <div>
+                <label htmlFor="name">Name: </label>
+                <input
+                    type="text"
+                    id="name"
+                    onChange={(element) =>
+                        onChangeReplaceName(id, element.target.value)
+                    }
+                />
+            </div>
         </div>
     );
 }

@@ -28,6 +28,20 @@ export default class App extends Component {
         this.setState({ persons });
     }
 
+    /**
+     *
+     * @param {string} id
+     * @param {string} newName
+     */
+    changeNameHandler(id, newName) {
+        const personIndex = this.state.persons.findIndex(
+            (person) => person.id === id,
+        );
+        const persons = structuredClone(this.state.persons);
+        persons[personIndex].name = newName;
+        this.setState({ persons });
+    }
+
     render() {
         return (
             <div>
@@ -40,6 +54,9 @@ export default class App extends Component {
                             age={age}
                             onClickIncreaseAge={
                                 this.increaseAgeHandler
+                            }
+                            onChangeReplaceName={
+                                this.changeNameHandler
                             }
                         >
                             <p>

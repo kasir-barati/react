@@ -37,6 +37,7 @@ export default function AppFunction(props) {
                         name={name}
                         age={age}
                         onClickIncreaseAge={increaseAgeHandler}
+                        onChangeReplaceName={changeNameHandler}
                     >
                         <p>
                             This is a children tag inside the Person
@@ -61,6 +62,16 @@ export default function AppFunction(props) {
         );
         const persons = structuredClone(personsState);
         persons[personIndex].age++;
+        setPersonsState(persons);
+    }
+
+    function changeNameHandler(id, newName) {
+        const personIndex = personsState.findIndex(
+            (person) => person.id === id,
+        );
+        /**@type {Person[]} */
+        const persons = structuredClone(personsState);
+        persons[personIndex].name = newName;
         setPersonsState(persons);
     }
 }
