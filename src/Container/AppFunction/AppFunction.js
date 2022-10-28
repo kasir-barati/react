@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-import './AppFunction.css';
+import appClasses from './AppFunction.module.css';
 import Person from '../../Component/Person/Person';
 
 /**
@@ -26,31 +26,52 @@ export default function AppFunction(props) {
     ];
     /**@type {[Person[], Function]} */
     const [personsState, setPersonsState] = useState(persons);
+    /**@type {[boolean, Function]} */
+    const [showPersonsState, setShowPersonsState] = useState(true);
 
     return (
-        <div>
-            {personsState.map(({ id, name, age }) => (
-                <>
-                    <Person
-                        id={id}
-                        key={id}
-                        name={name}
-                        age={age}
-                        onClickIncreaseAge={increaseAgeHandler}
-                        onChangeReplaceName={changeNameHandler}
-                    >
-                        <p>
-                            This is a children tag inside the Person
-                            component.
-                        </p>
-                    </Person>
-                    <button onClick={() => increaseAgeHandler(id)}>
-                        Increase age
-                    </button>
-                </>
-            ))}
-        </div>
+        <>
+            {generatePersonsContainer()}
+            <div className={appClasses.togglePerson}>
+                <button onClick={togglePersonsHandler}>
+                    Toggle persons
+                </button>
+            </div>
+        </>
     );
+
+    function generatePersonsContainer() {
+        if (showPersonsState) {
+            return (
+                <div>
+                    {personsState.map(({ id, name, age }) => (
+                        <>
+                            <Person
+                                id={id}
+                                key={id}
+                                name={name}
+                                age={age}
+                                onClickIncreaseAge={
+                                    increaseAgeHandler
+                                }
+                                onChangeReplaceName={
+                                    changeNameHandler
+                                }
+                            >
+                                <button
+                                    onClick={() =>
+                                        increaseAgeHandler(id)
+                                    }
+                                >
+                                    Increase age
+                                </button>
+                            </Person>
+                        </>
+                    ))}
+                </div>
+            );
+        }
+    }
 
     /**
      *
@@ -73,5 +94,9 @@ export default function AppFunction(props) {
         const persons = structuredClone(personsState);
         persons[personIndex].name = newName;
         setPersonsState(persons);
+    }
+
+    function togglePersonsHandler() {
+        setShowPersonsState(!showPersonsState);
     }
 }
