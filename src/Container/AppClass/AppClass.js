@@ -62,6 +62,10 @@ export default class App extends Component {
         console.log('[AppClass.js] componentDidMount');
     }
 
+    componentWillUnmount() {
+        console.log('[AppClass.js] componentWillUnmount');
+    }
+
     /**@type {{persons: Person[]}} */
     state = {
         persons: [

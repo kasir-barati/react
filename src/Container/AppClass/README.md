@@ -19,6 +19,8 @@
   4. `getSnapshotBeforeUpdate(previousProps, previousState)`
   5. `componentDidUpdate`
      - **Do side effects**, e.x. fetch data from server
+- Cleanup
+  1. In `componentWillUnmount` lifecycle hook you can cleanup stuff
 
 # React hooks
 
