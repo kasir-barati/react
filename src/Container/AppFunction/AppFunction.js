@@ -20,6 +20,11 @@ export default function AppFunction(props) {
             name: 'Kasir',
             age: 27,
         },
+        {
+            id: '7',
+            name: 'Mohammad Jawad',
+            age: 27,
+        },
     ];
     /**@type {[Person[], Function]} */
     const [personsState, setPersonsState] = useState(persons);
@@ -42,26 +47,27 @@ export default function AppFunction(props) {
             return (
                 <div>
                     {personsState.map((person) => (
-                        <>
-                            <Person
-                                person={person}
-                                key={person.id}
-                                onClickIncreaseAge={
-                                    increaseAgeHandler
-                                }
-                                onChangeReplaceName={
-                                    changeNameHandler
+                        <Person
+                            key={person.id}
+                            person={person}
+                            onClickIncreaseAge={increaseAgeHandler}
+                            onChangeReplaceName={changeNameHandler}
+                        >
+                            <button
+                                onClick={() =>
+                                    increaseAgeHandler(person.id)
                                 }
                             >
-                                <button
-                                    onClick={() =>
-                                        increaseAgeHandler(person.id)
-                                    }
-                                >
-                                    Increase age
-                                </button>
-                            </Person>
-                        </>
+                                Increase age
+                            </button>
+                            <button
+                                onClick={() =>
+                                    deletePersonHandler(person.id)
+                                }
+                            >
+                                Delete person
+                            </button>
+                        </Person>
                     ))}
                 </div>
             );
@@ -87,11 +93,26 @@ export default function AppFunction(props) {
         );
         /**@type {Person[]} */
         const persons = structuredClone(personsState);
+
         persons[personIndex].name = newName;
         setPersonsState(persons);
     }
 
     function togglePersonsHandler() {
         setShowPersonsState(!showPersonsState);
+    }
+
+    /**
+     * @param {string} id
+     */
+    function deletePersonHandler(id) {
+        /**@type {Person[]} */
+        const persons = structuredClone(personsState);
+        const personIndex = personsState.findIndex(
+            (person) => person.id === id,
+        );
+
+        persons.splice(personIndex, 1);
+        setPersonsState(persons);
     }
 }

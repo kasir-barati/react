@@ -17,6 +17,11 @@ export default class App extends Component {
                 name: 'Kasir',
                 age: 27,
             },
+            {
+                id: '13',
+                name: 'Mohammad Jawad',
+                age: 27,
+            },
         ],
         showPersons: true,
     };
@@ -39,32 +44,52 @@ export default class App extends Component {
             return (
                 <div>
                     {this.state.persons.map((person) => (
-                        <>
-                            <Person
-                                person={person}
-                                key={person.id}
-                                onClickIncreaseAge={
-                                    this.increaseAgeHandler
-                                }
-                                onChangeReplaceName={
-                                    this.changeNameHandler
+                        <Person
+                            person={person}
+                            key={person.id}
+                            onClickIncreaseAge={
+                                this.increaseAgeHandler
+                            }
+                            onChangeReplaceName={
+                                this.changeNameHandler
+                            }
+                        >
+                            <button
+                                onClick={() =>
+                                    this.increaseAgeHandler(person.id)
                                 }
                             >
-                                <button
-                                    onClick={() =>
-                                        this.increaseAgeHandler(
-                                            person.id,
-                                        )
-                                    }
-                                >
-                                    Increase age
-                                </button>
-                            </Person>
-                        </>
+                                Increase age
+                            </button>
+                            <button
+                                onClick={() =>
+                                    this.deletePersonHandler(
+                                        person.id,
+                                    )
+                                }
+                            >
+                                Delete person
+                            </button>
+                        </Person>
                     ))}
                 </div>
             );
         }
+    };
+
+    /**
+     *
+     * @param {string} id
+     */
+    deletePersonHandler = (id) => {
+        /**@type {Person[]} */
+        const persons = structuredClone(this.state.persons);
+        const personIndex = this.state.persons.findIndex(
+            (person) => person.id === id,
+        );
+
+        persons.splice(personIndex, 1);
+        this.setState({ persons });
     };
 
     /**
