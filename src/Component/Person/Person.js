@@ -20,6 +20,10 @@ import personClasses from './Person.module.css';
 export default function Person(props) {
     useEffect(() => {
         console.log('[Person.js] useEffect');
+        return () =>
+            console.log(
+                '[Person.js] useEffect. Cleanup is done in this function',
+            );
     }, [props.person]);
 
     const {

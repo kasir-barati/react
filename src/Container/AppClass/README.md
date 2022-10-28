@@ -34,3 +34,4 @@
     - By passing nothing it will run fr every render cycle.
     - By passing an empty array it will run soly for the first time and not more.
   - Do side effects.
+  - Do cleanups
