@@ -7,10 +7,7 @@ import Person from '../../Component/Person/Person';
 
 /**
  * @typedef Person
- * @type {Object}
- * @property {string} id
- * @property {string} name
- * @property {number} age
+ * @type {import("../../Component/Person/person").PersonType}
  *
  * @param {Object} props
  * @param {Person[]} props.persons
@@ -44,13 +41,11 @@ export default function AppFunction(props) {
         if (showPersonsState) {
             return (
                 <div>
-                    {personsState.map(({ id, name, age }) => (
+                    {personsState.map((person) => (
                         <>
                             <Person
-                                id={id}
-                                key={id}
-                                name={name}
-                                age={age}
+                                person={person}
+                                key={person.id}
                                 onClickIncreaseAge={
                                     increaseAgeHandler
                                 }
@@ -60,7 +55,7 @@ export default function AppFunction(props) {
                             >
                                 <button
                                     onClick={() =>
-                                        increaseAgeHandler(id)
+                                        increaseAgeHandler(person.id)
                                     }
                                 >
                                     Increase age

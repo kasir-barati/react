@@ -4,7 +4,12 @@ import React, { Component } from 'react';
 import Person from '../../Component/Person/Person';
 import appClasses from './AppClass.module.css';
 
+/**
+ * @typedef Person
+ * @type {import("../../Component/Person/person").PersonType}
+ */
 export default class App extends Component {
+    /**@type {{persons: Person[], showPersons: boolean}} */
     state = {
         persons: [
             {
@@ -33,13 +38,11 @@ export default class App extends Component {
         if (this.state.showPersons) {
             return (
                 <div>
-                    {this.state.persons.map(({ id, name, age }) => (
+                    {this.state.persons.map((person) => (
                         <>
                             <Person
-                                id={id}
-                                key={id}
-                                name={name}
-                                age={age}
+                                person={person}
+                                key={person.id}
                                 onClickIncreaseAge={
                                     this.increaseAgeHandler
                                 }
@@ -49,7 +52,9 @@ export default class App extends Component {
                             >
                                 <button
                                     onClick={() =>
-                                        this.increaseAgeHandler(id)
+                                        this.increaseAgeHandler(
+                                            person.id,
+                                        )
                                     }
                                 >
                                     Increase age

@@ -7,11 +7,11 @@ import personClasses from './Person.module.css';
 // import PropTypes from 'prop-types';
 
 /**
+ * @typedef Person
+ * @type {import("./person").PersonType}
  *
  * @param {object} props
- * @param {string} props.id
- * @param {string} props.name
- * @param {number} props.age
+ * @param {Person} props.person
  * @param {any} props.onClickIncreaseAge
  * @param {any} props.onChangeReplaceName
  * @param {any} props.children
@@ -19,13 +19,12 @@ import personClasses from './Person.module.css';
  */
 export default function Person(props) {
     const {
-        id,
-        age,
-        name,
+        person,
         onClickIncreaseAge,
         onChangeReplaceName,
         children,
     } = props;
+    const { age, id, name } = person;
 
     return (
         <div
