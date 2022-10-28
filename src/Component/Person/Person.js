@@ -1,6 +1,8 @@
 // @ts-check
 
 import React from 'react';
+
+import personClasses from './Person.module.css';
 // Module not found: Error: Can't resolve 'prop-types' in '/home/kasir/my-react-journey/src/components/Square'
 // import PropTypes from 'prop-types';
 
@@ -26,7 +28,10 @@ export default function Person(props) {
     } = props;
 
     return (
-        <div onClick={() => onClickIncreaseAge(id)}>
+        <div
+            className={personClasses.person}
+            onClick={() => onClickIncreaseAge(id)}
+        >
             <p>
                 I'm {name} and {age} years old.
             </p>
@@ -39,6 +44,7 @@ export default function Person(props) {
                     onChange={(element) =>
                         onChangeReplaceName(id, element.target.value)
                     }
+                    className={personClasses.name}
                 />
             </div>
         </div>
