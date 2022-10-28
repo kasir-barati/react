@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 
 import appClasses from './AppFunction.module.css';
-import Person from '../../Component/Person/Person';
-import ErrorBoundaryClass from '../../Component/ErrorBoundary/ErrorBoundaryClass';
+import Persons from '../../Component/Persons/Persons';
 
 /**
  * @typedef Person
@@ -29,56 +28,15 @@ export default function AppFunction(props) {
     ];
     /**@type {[Person[], Function]} */
     const [personsState, setPersonsState] = useState(persons);
-    /**@type {[boolean, Function]} */
-    const [showPersonsState, setShowPersonsState] = useState(true);
 
     return (
-        <>
-            {generatePersonsContainer()}
-            <div className={appClasses.togglePerson}>
-                <button onClick={togglePersonsHandler}>
-                    Toggle persons
-                </button>
-            </div>
-        </>
+        <Persons
+            persons={personsState}
+            onChangeReplaceName={changeNameHandler}
+            onClickDeletePerson={deletePersonHandler}
+            onClickIncreaseAge={increaseAgeHandler}
+        ></Persons>
     );
-
-    function generatePersonsContainer() {
-        if (showPersonsState) {
-            return (
-                <div>
-                    {personsState.map((person) => (
-                        <ErrorBoundaryClass key={person.id}>
-                            <Person
-                                person={person}
-                                onClickIncreaseAge={
-                                    increaseAgeHandler
-                                }
-                                onChangeReplaceName={
-                                    changeNameHandler
-                                }
-                            >
-                                <button
-                                    onClick={() =>
-                                        increaseAgeHandler(person.id)
-                                    }
-                                >
-                                    Increase age
-                                </button>
-                                <button
-                                    onClick={() =>
-                                        deletePersonHandler(person.id)
-                                    }
-                                >
-                                    Delete person
-                                </button>
-                            </Person>
-                        </ErrorBoundaryClass>
-                    ))}
-                </div>
-            );
-        }
-    }
 
     /**
      *
@@ -102,10 +60,6 @@ export default function AppFunction(props) {
 
         persons[personIndex].name = newName;
         setPersonsState(persons);
-    }
-
-    function togglePersonsHandler() {
-        setShowPersonsState(!showPersonsState);
     }
 
     /**

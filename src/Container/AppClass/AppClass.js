@@ -1,7 +1,7 @@
 // @ts-check
 import React, { Component } from 'react';
 
-import Person from '../../Component/Person/Person';
+import Persons from '../../Component/Persons/Persons';
 import appClasses from './AppClass.module.css';
 
 /**
@@ -9,7 +9,7 @@ import appClasses from './AppClass.module.css';
  * @type {import("../../Component/Person/person").PersonType}
  */
 export default class App extends Component {
-    /**@type {{persons: Person[], showPersons: boolean}} */
+    /**@type {{persons: Person[]}} */
     state = {
         persons: [
             {
@@ -18,12 +18,11 @@ export default class App extends Component {
                 age: 27,
             },
             {
-                id: '13',
+                id: '7',
                 name: 'Mohammad Jawad',
                 age: 27,
             },
         ],
-        showPersons: true,
     };
 
     /**
@@ -37,44 +36,6 @@ export default class App extends Component {
         const persons = structuredClone(this.state.persons);
         persons[personIndex].age++;
         this.setState({ persons });
-    };
-
-    generatePersonsContainer = () => {
-        if (this.state.showPersons) {
-            return (
-                <div>
-                    {this.state.persons.map((person) => (
-                        <Person
-                            person={person}
-                            key={person.id}
-                            onClickIncreaseAge={
-                                this.increaseAgeHandler
-                            }
-                            onChangeReplaceName={
-                                this.changeNameHandler
-                            }
-                        >
-                            <button
-                                onClick={() =>
-                                    this.increaseAgeHandler(person.id)
-                                }
-                            >
-                                Increase age
-                            </button>
-                            <button
-                                onClick={() =>
-                                    this.deletePersonHandler(
-                                        person.id,
-                                    )
-                                }
-                            >
-                                Delete person
-                            </button>
-                        </Person>
-                    ))}
-                </div>
-            );
-        }
     };
 
     /**
@@ -106,20 +67,14 @@ export default class App extends Component {
         this.setState({ persons });
     };
 
-    togglePersonsHandler = () => {
-        this.setState({ showPersons: !this.state.showPersons });
-    };
-
     render() {
         return (
-            <>
-                {this.generatePersonsContainer()}
-                <div className={appClasses.togglePerson}>
-                    <button onClick={this.togglePersonsHandler}>
-                        Toggle persons
-                    </button>
-                </div>
-            </>
+            <Persons
+                onChangeReplaceName={this.changeNameHandler}
+                onClickDeletePerson={this.deletePersonHandler}
+                onClickIncreaseAge={this.increaseAgeHandler}
+                persons={this.state.persons}
+            ></Persons>
         );
     }
 }
