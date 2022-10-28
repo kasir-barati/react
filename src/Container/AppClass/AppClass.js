@@ -9,6 +9,56 @@ import appClasses from './AppClass.module.css';
  * @type {import("../../Component/Person/person").PersonType}
  */
 export default class App extends Component {
+    constructor(props) {
+        console.log('[AppClass.js] constructor');
+        super(props);
+    }
+
+    static getDerivedStateFromProps(props, state) {
+        console.log('[AppClass.js] getDerivedStateFromProps');
+        console.dir(props, { depth: null });
+        console.log(state);
+
+        return state;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log('[AppClass.js] shouldComponentUpdate');
+        console.dir(nextProps, { depth: null });
+        console.log(nextState);
+
+        return nextState;
+    }
+
+    render() {
+        console.log('[AppClass.js] render');
+
+        return (
+            <Persons
+                onChangeReplaceName={this.changeNameHandler}
+                onClickDeletePerson={this.deletePersonHandler}
+                onClickIncreaseAge={this.increaseAgeHandler}
+                persons={this.state.persons}
+            ></Persons>
+        );
+    }
+
+    getSnapshotBeforeUpdate(previousProps, previousState) {
+        console.log('[AppClass.js] getSnapshotBeforeUpdate');
+        console.dir(previousProps, { depth: null });
+        console.log(previousState);
+
+        return previousState;
+    }
+
+    componentDidUpdate() {
+        console.log('[AppClass.js] componentDidUpdate');
+    }
+
+    componentDidMount() {
+        console.log('[AppClass.js] componentDidMount');
+    }
+
     /**@type {{persons: Person[]}} */
     state = {
         persons: [
@@ -66,15 +116,4 @@ export default class App extends Component {
         persons[personIndex].name = newName;
         this.setState({ persons });
     };
-
-    render() {
-        return (
-            <Persons
-                onChangeReplaceName={this.changeNameHandler}
-                onClickDeletePerson={this.deletePersonHandler}
-                onClickIncreaseAge={this.increaseAgeHandler}
-                persons={this.state.persons}
-            ></Persons>
-        );
-    }
 }
