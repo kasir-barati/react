@@ -19,3 +19,16 @@
   4. `getSnapshotBeforeUpdate(previousProps, previousState)`
   5. `componentDidUpdate`
      - **Do side effects**, e.x. fetch data from server
+
+# React hooks
+
+- `useState`
+  - To fake the `getDerivedStateFromProps` you can use this react hook and initialize it based on the `props` value.
+- `useEffect`
+  - Is equivalent to all the lifecycle hooks in a functional component.
+  - Is the second important react hook after `useState`.
+  - By default **runs for every render cycle**:
+    - By passing one or more items it is only executed when that item/s changes.
+    - By passing nothing it will run fr every render cycle.
+    - By passing an empty array it will run soly for the first time and not more.
+  - Do side effects.

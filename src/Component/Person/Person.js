@@ -1,6 +1,6 @@
 // @ts-check
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import personClasses from './Person.module.css';
 // Module not found: Error: Can't resolve 'prop-types' in '/home/kasir/my-react-journey/src/components/Square'
@@ -18,6 +18,10 @@ import personClasses from './Person.module.css';
  * @returns
  */
 export default function Person(props) {
+    useEffect(() => {
+        console.log('[Person.js] useEffect');
+    }, [props.person]);
+
     const {
         person,
         onClickIncreaseAge,
