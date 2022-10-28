@@ -26,6 +26,10 @@ export default function Person(props) {
     } = props;
     const { age, id, name } = person;
 
+    if (Math.ceil(Math.random() * 1000) % 2 === 0) {
+        throw 'Error';
+    }
+
     return (
         <div className={personClasses.person}>
             <p onClick={() => onClickIncreaseAge(id)}>

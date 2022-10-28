@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 
 import appClasses from './AppFunction.module.css';
 import Person from '../../Component/Person/Person';
+import ErrorBoundaryClass from '../../Component/ErrorBoundary/ErrorBoundaryClass';
 
 /**
  * @typedef Person
@@ -47,27 +48,32 @@ export default function AppFunction(props) {
             return (
                 <div>
                     {personsState.map((person) => (
-                        <Person
-                            key={person.id}
-                            person={person}
-                            onClickIncreaseAge={increaseAgeHandler}
-                            onChangeReplaceName={changeNameHandler}
-                        >
-                            <button
-                                onClick={() =>
-                                    increaseAgeHandler(person.id)
+                        <ErrorBoundaryClass key={person.id}>
+                            <Person
+                                person={person}
+                                onClickIncreaseAge={
+                                    increaseAgeHandler
+                                }
+                                onChangeReplaceName={
+                                    changeNameHandler
                                 }
                             >
-                                Increase age
-                            </button>
-                            <button
-                                onClick={() =>
-                                    deletePersonHandler(person.id)
-                                }
-                            >
-                                Delete person
-                            </button>
-                        </Person>
+                                <button
+                                    onClick={() =>
+                                        increaseAgeHandler(person.id)
+                                    }
+                                >
+                                    Increase age
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        deletePersonHandler(person.id)
+                                    }
+                                >
+                                    Delete person
+                                </button>
+                            </Person>
+                        </ErrorBoundaryClass>
                     ))}
                 </div>
             );
