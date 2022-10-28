@@ -27,11 +27,8 @@ export default function Person(props) {
     const { age, id, name } = person;
 
     return (
-        <div
-            className={personClasses.person}
-            onClick={() => onClickIncreaseAge(id)}
-        >
-            <p>
+        <div className={personClasses.person}>
+            <p onClick={() => onClickIncreaseAge(id)}>
                 I'm {name} and {age} years old.
             </p>
             {children}
