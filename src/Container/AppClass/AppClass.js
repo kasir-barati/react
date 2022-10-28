@@ -27,7 +27,7 @@ export default class App extends Component {
         console.dir(nextProps, { depth: null });
         console.log(nextState);
 
-        return nextState;
+        return true;
     }
 
     render() {
@@ -48,11 +48,14 @@ export default class App extends Component {
         console.dir(previousProps, { depth: null });
         console.log(previousState);
 
-        return previousState;
+        return { message: 'My snapshot' };
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(previousProps, previousState, snapshot) {
         console.log('[AppClass.js] componentDidUpdate');
+        console.dir(previousProps, { depth: null });
+        console.log(previousState);
+        console.log(snapshot);
     }
 
     componentDidMount() {
