@@ -1,9 +1,9 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
 
-export function Layout({ children }: PropsWithChildren) {
-  const marginX = { margin: "0 5px 0 5px" };
+export const marginX = { margin: "0 5px 0 5px" };
 
+export function Layout({ children }: PropsWithChildren) {
   return (
     <>
       <div>
@@ -12,6 +12,9 @@ export function Layout({ children }: PropsWithChildren) {
         </Link>
         <Link style={marginX} to="/contact-us" about="Contact us page">
           Contact Us
+        </Link>
+        <Link style={marginX} to="/products">
+          Products
         </Link>
       </div>
       {children}
