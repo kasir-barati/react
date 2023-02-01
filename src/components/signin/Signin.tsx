@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Layout } from "../Layout";
-import { User } from "../types";
+import { Layout } from "../../layout/Layout";
+import { User } from "../../types";
 
 export function Signin() {
   const navigate = useNavigate();

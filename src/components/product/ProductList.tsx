@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom";
-import { Layout, marginX } from "../Layout";
+import { Layout, marginX } from "../../layout/Layout";
 
 export function ProductList() {
   return (

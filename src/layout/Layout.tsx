@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export const marginX = { margin: "0 5px 0 5px" };
 

@@ -1,13 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ContactUs } from "./ContactUs";
-import { Home } from "./Home";
-import { Dashboard } from "./dashboard";
-import { ProtectedRoute } from "./protectedRoute/ProtectedRoute";
-import { Product } from "./product/Product";
-import { ProductEdit } from "./product/ProductEdit";
-import { ProductList } from "./product/ProductList";
-import { ProductSearch } from "./product/ProductSearch";
-import { Signin } from "./signin/Signin";
+import { ContactUs } from "../contactUs/ContactUs";
+import { Home } from "../home/Home";
+import { Dashboard } from "../dashboard/index";
+import { ProtectedRoute } from "../protectedRoute/ProtectedRoute";
+import { Product } from "../product/Product";
+import { ProductEdit } from "../product/ProductEdit";
+import { ProductList } from "../product/ProductList";
+import { ProductSearch } from "../product/ProductSearch";
+import { Signin } from "../signin/Signin";
 
 export function AppRoutes() {
   return (

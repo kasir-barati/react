@@ -1,5 +1,5 @@
-import { Child } from "./Child";
-import { Layout } from "./Layout";
+import { Child } from "../child/Child";
+import { Layout } from "../../layout/Layout";
 
 export function Home() {
   return (

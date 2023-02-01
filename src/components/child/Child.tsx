@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MessageContext } from "./App";
+import { MessageContext } from "../app/App";
 import { NestedChild } from "./NestedChild";
 
 export function Child() {
