@@ -1,9 +1,12 @@
 import { PropsWithChildren } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "./hooks/useAuth";
 
 export const marginX = { margin: "0 5px 0 5px" };
 
 export function Layout({ children }: PropsWithChildren) {
+  const isAuthenticated = useAuth();
+
   return (
     <>
       <div>
@@ -16,7 +19,10 @@ export function Layout({ children }: PropsWithChildren) {
         <Link style={marginX} to="/products">
           Products
         </Link>
-        <Link style={marginX} to="/dashboard">
+        <Link style={marginX} to="/signin">
+          Singin
+        </Link>
+        <Link style={marginX} to="/dashboard" hidden={!isAuthenticated}>
           Dashboard
         </Link>
       </div>

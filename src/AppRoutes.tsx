@@ -7,6 +7,7 @@ import { Product } from "./product/Product";
 import { ProductEdit } from "./product/ProductEdit";
 import { ProductList } from "./product/ProductList";
 import { ProductSearch } from "./product/ProductSearch";
+import { Signin } from "./signin/Signin";
 
 export function AppRoutes() {
   return (
@@ -22,6 +23,7 @@ export function AppRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}></Route>
         </Route>
+        <Route path="/signin" element={<Signin />}></Route>
       </Routes>
     </BrowserRouter>
   );
