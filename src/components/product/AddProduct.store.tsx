@@ -28,6 +28,7 @@ export function addProductStore(): AddProductStore {
       };
 
       state.set(tempProductContainer);
+      // Basically these two method do the same thing, I mean you can use either product.set or state.set
       product.set(tempProductContainer);
     }
   );
