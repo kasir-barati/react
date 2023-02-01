@@ -16,6 +16,9 @@ export function Layout({ children }: PropsWithChildren) {
         <Link style={marginX} to="/products">
           Products
         </Link>
+        <Link style={marginX} to="/dashboard">
+          Dashboard
+        </Link>
       </div>
       {children}
     </>
