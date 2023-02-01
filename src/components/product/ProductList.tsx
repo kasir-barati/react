@@ -14,6 +14,9 @@ export function ProductList() {
         <Link style={marginX} to="/products/edit">
           Edit
         </Link>
+        <Link style={marginX} to="/products/add">
+          Add
+        </Link>
       </div>
 
       <Link to="/products/1">First Product</Link>

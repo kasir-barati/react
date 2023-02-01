@@ -8,6 +8,7 @@ import { ProductEdit } from "../product/ProductEdit";
 import { ProductList } from "../product/ProductList";
 import { ProductSearch } from "../product/ProductSearch";
 import { Signin } from "../signin/Signin";
+import { AddProduct } from "../product/AddProduct";
 
 export function AppRoutes() {
   return (
@@ -19,6 +20,7 @@ export function AppRoutes() {
           <Route path="search" element={<ProductSearch />}></Route>
           <Route path=":id" element={<Product />}></Route>
           <Route path="edit" element={<ProductEdit />}></Route>
+          <Route path="add" element={<AddProduct />}></Route>
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />}></Route>
