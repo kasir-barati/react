@@ -20,7 +20,8 @@ export function addProductStore(): AddProductStore {
   let addProduct;
   addProduct = action(
     product,
-    Object.keys({ addProduct }).pop() as string,
+    // DOes not matter it seems
+    "Object.keys({ addProduct }).pop() as string",
     (state, productData: Omit<Product, "id">) => {
       const tempProductContainer = {
         id: Math.random().toString(36).slice(2, 7),
