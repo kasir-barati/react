@@ -1,8 +1,14 @@
+import { Button, Stack, TextField } from "@mui/material";
+
 export function ProductSearch() {
   return (
-    <div>
-      Type something: <input type="text"></input>
-      <input type="button" value="Search"></input>
-    </div>
+    <Stack alignItems="start" spacing={2}>
+      <TextField
+        fullWidth
+        label="Type something"
+        helperText="Name, description, whatever"
+      />
+      <Button variant="contained">Search</Button>
+    </Stack>
   );
 }

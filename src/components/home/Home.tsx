@@ -1,13 +1,15 @@
+import { Stack } from "@mui/system";
+import { Typography } from "@mui/material";
 import { Child } from "../child/Child";
 import { Layout } from "../../layout/Layout";
 
 export function Home() {
   return (
     <Layout>
-      <div>
-        Welcome Home
+      <Stack>
+        <Typography variant="h1">Welcome Home</Typography>
         <Child />
-      </div>
+      </Stack>
     </Layout>
   );
 }

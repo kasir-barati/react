@@ -1,27 +1,17 @@
-import { Link, Outlet } from "react-router-dom";
-import { Layout, marginX } from "../../layout/Layout";
+import { Link } from "react-router-dom";
+import { Layout } from "../../layout/Layout";
+import { Paper } from "@mui/material";
 
 export function ProductList() {
   return (
     <Layout>
-      <div>
-        <Link style={marginX} to="/products/search">
-          Search
-        </Link>
-        <Link style={marginX} to="/products/list">
-          List
-        </Link>
-        <Link style={marginX} to="/products/edit">
-          Edit
-        </Link>
-        <Link style={marginX} to="/products/add">
-          Add
-        </Link>
-      </div>
-
-      <Link to="/products/1">First Product</Link>
-
-      <Outlet />
+      <Paper
+        sx={{
+          padding: 1,
+        }}
+      >
+        <Link to="/products/1">First Product</Link>
+      </Paper>
     </Layout>
   );
 }

@@ -1,3 +1,5 @@
+import { Stack } from "@mui/system";
+
 export function Dashboard() {
-  return <div>Dashboard graphs</div>;
+  return <Stack>Dashboard graphs</Stack>;
 }
