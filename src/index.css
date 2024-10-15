@@ -1,0 +1,16 @@
+* {
+  border-inline: 0;
+  border-block: 0;
+  margin-block: 0;
+  margin-inline: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  padding-block: 1rem;
+  background-color: #1f1f1f;
+}

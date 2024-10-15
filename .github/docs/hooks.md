@@ -1,10 +1,7 @@
 # React hooks
 
-- JS functions are a group of statements + some inputs & outputs.
-- You can call functions inside each other (composing).
-- In React components are JS functions. Thus we can utilize components inside each other.
+- Hooks are special functions that let your components use React features.
 - We have two kind of component: stateful, and stateless.
-- In react components should be a pure function (same input, same output, no matter how many times called).
 - React components should be as much as possible stateless.
 - Can be used only inside functional components.
 - They should be called at the top level of your component.
@@ -13,9 +10,9 @@
 
 ## `useState`
 
-- It creates a new _state_ for us + its setter.
+- It creates a new _state_ + a state setter function.
   - Accepts the initial state when being called; `useState(/* initial state */)`.
-  - Each time the component is called it creates separate states for each one.
+  - Each time the component is called it creates am isolated state.
 - The convention is to name _state_ variables like `[something, setSomething]`.
 - Update it with `setCount(previousCount => previousCount + 1)` and not `setCount(count + 1)`. Because if we call the latter case twice it is not gonna increase it by two since the count stays the same value as it was while it got rendered.
 - In `StrictMode`, React will call your initializer function twice in order to help you find accidental impurities. This is development-only behavior and does not affect production.

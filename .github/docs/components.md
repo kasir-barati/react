@@ -145,7 +145,7 @@
 ### Side effects
 
 - Updating the screen, starting an animation, changing the data.
-- Event handlers don’t need to be pure.
+- [Event handlers](./events.md) don’t need to be pure.
 - Cannot find the right event handler for your side effect? Attach it to your returned JSX with a `useEffect` call.
 
   > [!NOTE]
@@ -233,3 +233,23 @@ Why multiple separate files?
 
 - Nodes represent a JS module.
 - Useful to determine what modules are necessary to run your React app (bundler uses this piece of info).
+
+## How ReactJS updates the DOM
+
+- Before your components are displayed on the screen, they must be rendered by React.
+- Your components are cooks in the kitchen.
+- ReactJS is the waiter who puts in requests from customers and brings them their orders.
+
+### Steps
+
+1. Triggering a render.
+
+   ![Delivering the diner's order to the kitchen](./assets/trigger-a-render.png)
+
+2. Rendering the component.
+
+   ![Preparing the order in the kitchen](./assets/rendering-the-component.png)
+
+3. Committing to the DOM.
+
+   ![Placing the order on the table](./assets/committing-to-the-dom.png)

@@ -172,6 +172,6 @@
   >   - Your components and DOM will be recreated every time; slow down your react app.
   > - Your components won’t receive key as a prop. ReactJS use it internally.
 
-- Responding to events:
+- Responding to [events](./events.md):
 
   ![Event handler](./assets/event-handler.png)
