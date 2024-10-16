@@ -59,6 +59,11 @@
     const sculpture = sculptureList[index];
 
     function handleNextClick() {
+      console.log(sculptureList.length, index);
+      if (index + 1 >= sculptureList.length) {
+        setIndex(0);
+        return;
+      }
       setIndex(index + 1);
     }
     function handleMoreClick() {
@@ -93,11 +98,10 @@
     moreButton.textContent = output.more;
     image.src = output.imageSrc;
     image.alt = output.imageAlt;
+    description.style.display = 'none';
     if (output.description !== null) {
       description.textContent = output.description;
       description.style.display = '';
-    } else {
-      description.style.display = 'none';
     }
   }
 
