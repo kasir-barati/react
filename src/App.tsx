@@ -1,10 +1,22 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 import { words } from './assets/words.asset';
+import { Clock } from './components/clock/Clock.component';
 import { WordCloud } from './components/word-cloud/WordCloud.component';
+import { getTime } from './utils/get-time.util';
 
 function App() {
+  const [time, setTime] = useState(getTime());
+
+  useEffect(() => {
+    setInterval(() => {
+      setTime(getTime());
+    }, 1000);
+  }, []);
+
   return (
     <>
+      <Clock time={time} />
       <WordCloud words={words} />
       <section
         onClickCapture={() => {
