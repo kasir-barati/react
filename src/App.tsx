@@ -4,6 +4,7 @@ import { words } from './assets/words.asset';
 import { Clock } from './components/clock/Clock.component';
 import { WordCloud } from './components/word-cloud/WordCloud.component';
 import { getTime } from './utils/get-time.util';
+import { Faq } from './components/faq/Faq.component';
 
 function App() {
   const [time, setTime] = useState(getTime());
@@ -34,6 +35,7 @@ function App() {
           BTN1
         </button>
       </section>
+      <Faq />
     </>
   );
 }
