@@ -17,8 +17,10 @@ function App() {
   return (
     <>
       <Clock time={time} />
-      <WordCloud words={words} />
+      {/* TODO: fix performance issue of the WordCloud component */}
+      {/* <WordCloud words={words} /> */}
       <section
+        className="btn"
         onClickCapture={() => {
           console.log('onClickCapture section');
         }}
