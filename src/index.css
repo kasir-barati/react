@@ -13,4 +13,11 @@ body {
   justify-content: center;
   padding-block: 1rem;
   background-color: #1f1f1f;
+  color: white;
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
 }
