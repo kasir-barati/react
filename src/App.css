@@ -1,4 +1,4 @@
-div:not(#root) {
+section.btn {
   display: flex;
   flex-direction: row;
   gap: 1rem;
