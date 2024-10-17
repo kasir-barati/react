@@ -2,7 +2,12 @@
 
 ![Events](./assets/events.png)
 
-- Functions that will be triggered in response to user interactions (clicking, hovering, focusing on form inputs, and so on).
+- Functions that will be triggered **in response to user interactions** (clicking, hovering, focusing on form inputs, and so on).
+
+  > [!IMPORTANT]
+  >
+  > In other word, for our ReactJS web app to react to the event, we need to update the [state](./state.md).
+
 - HTML elements such as `button` only support built-in browser events like `onClick`.
 - Custom components written by us can have any application-specific names as their event handler props:
 

@@ -3,8 +3,8 @@
 - Hooks are special functions that let your components use React features.
 - We have two kind of component: stateful, and stateless.
 - React components should be as much as possible stateless.
-- Can be used only inside functional components.
-- They should be called at the top level of your component.
+- By convention any function starting with `use`.
+- They should be called at the **top level of your component**.
   - Hooks **CAN NOT** be called conditionally (`if (whatever) { useState() }` :x:).
   - You want to use `useState` in a condition or a loop, extract it into a new component.
 
@@ -12,8 +12,13 @@
 
 - It creates a new _state_ + a state setter function.
   - Accepts the initial state when being called; `useState(/* initial state */)`.
-  - Each time the component is called it creates am isolated state.
+  - Each time the component is called it creates an isolated state.
 - The convention is to name _state_ variables like `[something, setSomething]`.
+
+  > [!NOTE]
+  >
+  > This syntax is [array destructuring](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment).
+
 - Update it with `setCount(previousCount => previousCount + 1)` and not `setCount(count + 1)`. Because if we call the latter case twice it is not gonna increase it by two since the count stays the same value as it was while it got rendered.
 - In `StrictMode`, React will call your initializer function twice in order to help you find accidental impurities. This is development-only behavior and does not affect production.
 - [Examples](https://react.dev/reference/react/useState#examples-basic).

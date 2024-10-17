@@ -2,7 +2,7 @@
 
 - Isolated pieces of UI.
 - UI is built from small units like buttons, text, and images.
-- React apps are made out of components.
+- ReactJS apps are made out of components.
 
   ![Component definition](./assets/component.png)
 
@@ -52,7 +52,7 @@
   > }
   > ```
 
-- React component names must always start with a capital letter (PascalCase naming convention). If your component name does not start with a capital letter it won't work.
+- ReactJS component names must always start with a capital letter (PascalCase naming convention). If your component name does not start with a capital letter it won't work.
 - The markup syntax you’ve seen above is called [`JSX`](./jsx.md).
 - Components can store information temporarily. For this we use [states](./state.md).
 
@@ -119,7 +119,7 @@
 
 > [!NOTE]
 >
-> React wraps your entire app in a component called `StrictMode`. This component will render your components twice, thus ensuring that none of your components have any side effect (are impure).
+> ReactJS wraps your entire app in a component called `StrictMode`. This component will render your components twice, thus ensuring that none of your components have any side effect (are impure).
 
 > [!IMPORTANT]
 >
@@ -187,15 +187,15 @@
 - Nodes: each component: App, Table, Cell, to name a few.
 - Root node:
   - The root component of the app. In this case App.
-  - The first component React renders.
+  - The first component ReactJS renders.
 - Each arrow in the tree points from a parent component to a child component.
 
 #### Where are HTML elements?
 
 - HTML markup is a UI primitives.
-- React, as a UI framework, is platform agnostic, meaning:
-  - Render tree is only composed of React components.
-  - Render tree provides insight to our React app regardless of what platform your app renders to.
+- ReactJS, as a UI framework, is platform agnostic, meaning:
+  - Render tree is only composed of ReactJS components.
+  - Render tree provides insight to our ReactJS app regardless of what platform your app renders to.
 
 ## Default vs named exports
 
@@ -232,11 +232,11 @@ Why multiple separate files?
 ![Dependency tree](./assets/module-dependency-tree.png)
 
 - Nodes represent a JS module.
-- Useful to determine what modules are necessary to run your React app (bundler uses this piece of info).
+- Useful to determine what modules are necessary to run your ReactJS app (bundler uses this piece of info).
 
 ## How ReactJS updates the DOM
 
-- Before your components are displayed on the screen, they must be rendered by React.
+- Before your components are displayed on the screen, they must be rendered by ReactJS.
 - Your components are cooks in the kitchen.
 - ReactJS is the waiter who puts in requests from customers and brings them their orders.
 
@@ -244,12 +244,32 @@ Why multiple separate files?
 
 1. Triggering a render.
 
+   - Occurs on:
+
+     1. Component's initial render: `createRoot`.
+     2. Component's (or one of its ancestors') state has been updated: `set*(newValue)`.
+
+        > [!TIP]
+        >
+        > Sometimes a component's state changes, and that component is located very high in the [render tree](#render-tree). So it does not make sense to rerender all of its children. In these kind of scenarios we opt for optimizing our components.
+        >
+        > **But remember to not optimize prematurely (beforehand).**
+        >
+        > But to give you an idea of when you need to think in terms of improving performance of your ReactJS app why do not you look at [this code](https://github.com/kasir-barati/react/tree/490527078d8bc2847a0924dc307f7839cb2b3bca).
+
    ![Delivering the diner's order to the kitchen](./assets/trigger-a-render.png)
 
 2. Rendering the component.
 
+   - This process is recursive; it will render all components used, until it reaches the last one. So that it know exactly what should it display on screen.
+   - **Must** be a [pure calculation](#pure-components).
+
    ![Preparing the order in the kitchen](./assets/rendering-the-component.png)
 
 3. Committing to the DOM.
+
+   - For the initial render, ReactJS will use the [`appendChild()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild).
+   - ReactJS only changes the DOM nodes if there’s a difference between renders.
+   - After ReactJS updates the DOM, browser will repaint the screen (what is called "browser rendering", learn more [here](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work#render)).
 
    ![Placing the order on the table](./assets/committing-to-the-dom.png)
