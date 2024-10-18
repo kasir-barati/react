@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react';
 import './App.css';
-import { words } from './dummy-data/words.dummy-data';
-import { Clock } from './components/clock/Clock.component';
-import { WordCloud } from './components/word-cloud/WordCloud.component';
-import { getTime } from './utils/get-time.util';
-import { Faq } from './components/faq/Faq.component';
-import { Messenger } from './components/chat/Messenger.component';
-import { TaskManager } from './components/task-manager/TaskManager.component';
+import { TaskManager } from './components/task-manager-context/TaskManager.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());

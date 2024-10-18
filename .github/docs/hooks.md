@@ -44,3 +44,19 @@
   - [Learn more](https://react.dev/learn/managing-state).
 - Avoiding recreating the initial state; instead of `useState(createInitialTodos());` do this `useState(createInitialTodos);` ([learn more](https://react.dev/reference/react/useState#avoiding-recreating-the-initial-state)).
 - Changing `key` attribute causes rerender in _React_ ([learn more](https://react.dev/reference/react/useState#resetting-state-with-a-key)).
+
+## `useReducer`
+
+- You have many state updates spread across many event handlers.
+- Consolidate all the state update logic outside your component in a single function (`reducer`).
+- Event handlers only specify the user "actions".
+- You can utilize [discriminated unions](https://dev.to/kasir-barati/discriminated-unions-in-reactjs-5g25) in your code to have better typing.
+
+## `useContext`
+
+- To access a created context value.
+- Related to [prop drilling issue](./components.md#prop-drilling-issue).
+- Can combine this with [reducers](#usereducer) to manage complex states;
+  - Read the states through `useContext` from anywhere deep within the render tree.
+  - Dispatch events to keep them update.
+- You can find an example of it [here](../../src/components/task-manager-context/TasksContext.component.tsx).

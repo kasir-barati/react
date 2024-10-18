@@ -130,7 +130,7 @@ setPerson({
 
 > [!TIP]
 >
-> Generally, you shouldn’t need to update state more than a couple of levels deep. If your state objects are very deep, you might want to restructure them differently so that they are flat.
+> Generally, you shouldn’t need to update state more than a couple of levels deep. If your state objects are very deep, you might want to [restructure](#choosing-the-state-structure) them differently so that they are flat.
 
 ## How ReactJS know which state should be returned
 
@@ -274,9 +274,139 @@ function isNumber(n: unknown): n is number {
 
 ## Choosing the State Structure
 
+> [!NOTE]
+>
+> - Most important principle: **NO redundant or duplicate state, it is a common source of bugs**.
+>
+>   ```ts
+>   const [firstName, setFirstName] = useState('');
+>   const [lastName, setLastName] = useState('');
+>   const [fullName, setFullName] = useState('');
+>   ```
+>
+>   Here the `fullName` state is absolutely redundant and hard to maintain.
+>
+> - Be more intentional about:
+>   - [Organizing your state](#building-a-good-structure-for-your-state).
+>   - How the [data flows between your components](#lifting-state-up).
+> - Keep your state update logic maintainable.
+
+### DO NOT modify the UI from code directly
+
+- Do **NOT** write something like:
+
+  ```tsx
+  const [message, setMessage] = useState('');
+  function handleSubmit(e) {
+    e.preventDefault();
+    // Imperatively changing the UI by directly enabling/disabling elements.
+    document.getElementById('submitButton').disabled = true;
+    document.getElementById('successMessage').style.display = 'block';
+    // Normally in React, you wouldn't directly manipulate the DOM like this.
+  }
+  // ...
+  <section>
+    <form onClick={handleSubmit}>
+      <input
+        type="text"
+        onChange={(e) => setMessage(e.target.value)}
+      />
+      <button type="submit" id="submitButton">
+        Submit
+      </button>
+    </form>
+    <p id="successMessage" style={{ display: 'none' }}>
+      Success!
+    </p>
+  </section>;
+  ```
+
+- Instead:
+
+  1. Describe the UI you want to see for the different states of your component.
+  2. Then trigger the state changes in response to user action.
+
+  Similar to how designers think about UI.
+
+  ![State machine for a simple quiz show](./assets/state-machine-for-state-structure.jpg)
+
+  ```tsx
+  const [answer, setAnswer] = useState('');
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('typing');
+
+  if (status === 'success') {
+    return <h1>That's right, your answer has been sent!</h1>;
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      await submitForm(answer);
+      setStatus('success');
+    } catch (err) {
+      setStatus('typing');
+      setError(err);
+    }
+  }
+  function submitForm(answer) {
+    // Pretend it's hitting the network.
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let shouldError = answer.toLowerCase() !== 'lima';
+        if (shouldError) {
+          reject(
+            new Error('Good guess but a wrong answer. Try again!'),
+          );
+        } else {
+          resolve();
+        }
+      }, 1500);
+    });
+  }
+  // ...
+  <section>
+    <h2>Wheel of Fortune</h2>
+    <p>
+      In which city is there a billboard that turns air into drinkable
+      water?
+    </p>
+    <form onSubmit={handleSubmit}>
+      <textarea
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+        disabled={status === 'submitting'}
+      />
+      <button
+        type="submit"
+        disabled={answer.length === 0 || status === 'submitting'}
+      >
+        Submit
+      </button>
+      {error !== null && <p className="Error">{error.message}</p>}
+    </form>
+  </section>;
+  ```
+
+  And as you can see it, our UI is being rendered by ReactJS according to the changes we make in our states: `disabled={answer.length === 0 || status === 'submitting'}`.
+
+> [!TIP]
+>
+> Approach interactions with a **state-driven mindset**.
+
+### Building a good structure for your state
+
 - Have multiple state variables if their state is unrelated.
 - If you find that you often change two state variables together, it might be easier to combine them into one.
 
-## Lifting state up
+#### Lifting state up
 
 - Sharing state between multiple components.
+- E.g. when you have a [faq section](https://codesandbox.io/p/sandbox/gw6dyj) and you wanna show user the answer to one question at a time. So when user click to see the answer it.
+
+  In that example you can see that I have moved the state of which faq is open to the parent component and pass a handler to it so that I can change which faq should be open.
+
+- In this [messenger app](https://codesandbox.io/p/sandbox/solitary-sun-v4lkfz) when you change the recipient your textbox won't be emptied. So you might send a message to the wrong person. So to solve that problem we can signal to ReactJS that it needs to rerender the `ChatBox` component when the state called `to`, changes by [specifying `key={to.email}`](https://github.com/kasir-barati/react/blob/main/src/components/chat/Messenger.component.tsx#L24).
+
+  You could just lift up the `text` state to the `Messenger` component and set it to empty string in `handleSelect` handler. **But** I am pretty sure that this is not the right move, just imagine how many states you need to then lift up.
