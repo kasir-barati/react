@@ -60,3 +60,164 @@
   - Read the states through `useContext` from anywhere deep within the render tree.
   - Dispatch events to keep them update.
 - You can find an example of it [here](../../src/components/task-manager-context/TasksContext.component.tsx).
+
+## `useRef`
+
+- A component remember <small>(kinda like state)</small> some information.
+- Retained by React between rerenders <small>(unlike variable they do not lose their values between rerenders)</small>.
+- **But** no rerender when it changes.
+
+### Use cases
+
+Store things that don’t impact the component’s rendering output. E.g.:
+
+- timeout IDs.
+- DOM elements:
+
+  - Access to the DOM elements to focus on it, scroll to it, or measure its size and position:
+
+    ```tsx
+    const inputRef = useRef(null);
+    // ...
+    <>
+      <input ref={inputRef} />
+      <button onClick={() => inputRef.current.focus()}>
+        Focus the input
+      </button>
+    </>;
+    ```
+
+## `useEffect`
+
+- Synchronize with external systems:
+  - Send an analytics log.
+- Runs some code after rendering.
+- The second argument is the dependencies:
+
+  - Dependency list is a list of all the **reactive** values used by your `useEffect`'s code.
+
+    > [!TIP]
+    >
+    > How you code determine what should go inside the dependency array.
+
+  - ReactJS will re-execute the callback function passed to it if the specified dependencies changes.
+
+    Assume that you have a VPN web app and user can decide to which server they wanna connect, now here the parent component sends the `serverName` and our effect needs to reflect any change in the `serverName`.
+
+    ```tsx
+    export function Server({
+      serverName,
+    }: Readonly<{ serverName: string }>) {
+      useEffect(() => {
+        const serverUrl = getServerUrl(serverName);
+        const connection = createConnection(serverUrl);
+        connection.connect();
+        return () => connection.disconnect();
+      }, [serverName]);
+      // ...
+    }
+    ```
+
+    > [!NOTE]
+    >
+    > You'll get a linter error when you forget to specify dependencies of a `useEffect` hook. E.g. in the `Counter` component we are receiving interval from parent component and use it inside the `useEffect` hook.
+    >
+    > ```tsx
+    > function Counter({ interval }) {
+    >   const [count, setCount] = useState(0);
+    >   useEffect(() => {
+    >     const counterInterval = setInterval(function () {
+    >       setCount((prev) => prev + 1);
+    >     }, interval);
+    >     return () => clearInterval(counterInterval);
+    >   }, []);
+    >   return <p>and the counter counts {count}</p>;
+    > }
+    > ```
+    >
+    > ![Missing dep linter error message](./assets/useEffect-missing-dep.png)
+
+  - If you pass empty array <small>(`useEffect(() => {}, [])`)</small> it will execute your code only once on first render.
+  - **But** if you skip the second argument all together <small>(`useEffect(() => {})`)</small> ReactJS will execute your callback on each render!
+
+- Do clean up after ReactJS wants to unmount your component. E.g. in a chat web app you need to establish a web socket connection to your backend and disconnect from it when the component is being unmounted:
+
+  ```ts
+  useEffect(() => {
+    const connection = createWebsocketConnection();
+    connection.connect();
+    return () => connection.disconnect();
+  }, []);
+  ```
+
+### Don'ts
+
+Do not use `useEffect` when:
+
+- If you want to update a component's state when some props or state changes.
+
+  ```tsx
+  const [firstName, setFirstName] = useState('Taylor');
+  const [lastName, setLastName] = useState('Swift');
+  // Unnecessary Effect
+  const [fullName, setFullName] = useState('');
+  useEffect(() => {
+    setFullName(firstName + ' ' + lastName);
+  }, [firstName, lastName]);
+  ```
+
+- Transforming data for rendering.
+- Fetching data: for this specific case you can define your custom hook.
+- To **handle user events**.
+
+> [!NOTE]
+>
+> Removing unnecessary Effects will make your code:
+>
+> 1. Easier to follow.
+> 2. Faster to run.
+> 3. Less error-prone.
+
+### Lifecycle
+
+1. Start synchronizing something.
+2. Stop synchronizing it.
+
+## Custom hook
+
+> [!TIP]
+>
+> You should be writing less `useEffect` hooks and more composable, reusable custom hooks.
+
+- Fetching data from external resources:
+
+  ```tsx
+  import { useState, useEffect } from 'react';
+
+  export function useFetch<DataType, ErrorType = any>(url: string) {
+    const [data, setData] = useState<DataType | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<ErrorType | null>(null);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error('Error fetching data');
+          }
+          const result = await response.json();
+          setData(result);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchData();
+    }, [url]);
+
+    return { data, loading, error };
+  }
+  ```
