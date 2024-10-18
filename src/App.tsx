@@ -6,6 +6,7 @@ import { WordCloud } from './components/word-cloud/WordCloud.component';
 import { getTime } from './utils/get-time.util';
 import { Faq } from './components/faq/Faq.component';
 import { Messenger } from './components/chat/Messenger.component';
+import { TaskManager } from './components/task-manager/TaskManager.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -19,7 +20,8 @@ function App() {
 
   return (
     <>
-      <Messenger />
+      <TaskManager />
+      {/* <Messenger /> */}
       {/* <Clock time={time} /> */}
       {/* TODO: fix performance issue of the WordCloud component */}
       {/* <WordCloud words={words} /> */}
