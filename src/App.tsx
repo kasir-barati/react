@@ -5,22 +5,25 @@ import { Clock } from './components/clock/Clock.component';
 import { WordCloud } from './components/word-cloud/WordCloud.component';
 import { getTime } from './utils/get-time.util';
 import { Faq } from './components/faq/Faq.component';
+import { Messenger } from './components/chat/Messenger.component';
 
 function App() {
-  const [time, setTime] = useState(getTime());
+  // const [time, setTime] = useState(getTime());
 
-  useEffect(() => {
-    setInterval(() => {
-      setTime(getTime());
-    }, 1000);
-  }, []);
+  // This line was causing my entire app to rerender each second!
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     setTime(getTime());
+  //   }, 1000);
+  // }, []);
 
   return (
     <>
-      <Clock time={time} />
+      <Messenger />
+      {/* <Clock time={time} /> */}
       {/* TODO: fix performance issue of the WordCloud component */}
       {/* <WordCloud words={words} /> */}
-      <section
+      {/* <section
         className="btn"
         onClickCapture={() => {
           console.log('onClickCapture section');
@@ -34,8 +37,8 @@ function App() {
         >
           BTN1
         </button>
-      </section>
-      <Faq />
+      </section> */}
+      {/* <Faq /> */}
     </>
   );
 }
