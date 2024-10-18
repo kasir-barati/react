@@ -273,3 +273,10 @@ Why multiple separate files?
    - After ReactJS updates the DOM, browser will repaint the screen (what is called "browser rendering", learn more [here](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work#render)).
 
    ![Placing the order on the table](./assets/committing-to-the-dom.png)
+
+## Prop drilling issue
+
+- Normally you pass information from a parent component to a child component via props.
+- But what if many components need the same information.
+- Beside normal scenarios where we wanna use this feature I love [this use case](https://react.dev/learn/managing-state#passing-data-deeply-with-context) too: There we can just kinda use `Heading` component and it will automatically get its level from `Section` component which is its parent.
+- Done through [`useContext`](./hooks.md#usecontext).

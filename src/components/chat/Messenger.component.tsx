@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Messenger.component.css';
-import { contacts } from '../../assets/contacts.asset';
+import { contacts } from '../../dummy-data/contacts.dummy-data';
 import { ContactList } from './ContactList.component';
 import { Contact } from '../../types/contact.type';
 import { ChatBox } from './ChatBox.component';

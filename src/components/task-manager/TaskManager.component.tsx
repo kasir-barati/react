@@ -1,7 +1,7 @@
 import { useReducer } from 'react';
 import { CreateTask } from './CreateTask.component';
 import { TasksList } from './TasksList.component';
-import { tasks as initialTasks } from '../../assets/tasks.asset';
+import { tasks as initialTasks } from '../../dummy-data/tasks.dummy-data';
 import './TaskManager.component.css';
 import { Task } from '../../types/task.type';
 

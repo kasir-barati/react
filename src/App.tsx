@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { words } from './assets/words.asset';
+import { words } from './dummy-data/words.dummy-data';
 import { Clock } from './components/clock/Clock.component';
 import { WordCloud } from './components/word-cloud/WordCloud.component';
 import { getTime } from './utils/get-time.util';

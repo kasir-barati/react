@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { faqs } from '../../assets/faqs.asset';
+import { faqs } from '../../dummy-data/faqs.dummy-data';
 import './Faq.component.css';
 import { Faq as FaqType } from '../../types/faq.type';
 import classNames from 'classnames';
