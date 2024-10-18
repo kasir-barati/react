@@ -42,6 +42,7 @@ export function TaskManager() {
   );
 }
 
+// discriminated unions
 interface CreateTaskManagerAction {
   type: 'create';
   taskName: string;
