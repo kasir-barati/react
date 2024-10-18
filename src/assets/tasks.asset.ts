@@ -12,7 +12,7 @@ export const tasks: Task[] = [
     name: 'Watch a puppet show',
   },
   {
-    id: '6712435999340f06ee509df8',
+    id: '67127a3743e5d14e406655f4',
     inProgress: false,
     name: 'Lennon Wall pic',
   },

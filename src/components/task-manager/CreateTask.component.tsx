@@ -6,13 +6,13 @@ interface CreateTaskProps {
 }
 
 export function CreateTask({ onCreate }: Readonly<CreateTaskProps>) {
-  const [taskName, setTaskName] = useState<string>();
+  const [taskName, setTaskName] = useState<string>('');
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     setTaskName(e.target.value);
   }
   function handleClickAdd() {
-    if (!taskName || taskName?.trim?.length === 0) {
+    if (!taskName || taskName?.trim()?.length === 0) {
       throw 'A task with no name, cannot create such a task!';
     }
 
