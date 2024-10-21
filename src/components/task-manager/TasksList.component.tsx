@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { Task as TaskType } from '../../types/task.type';
 import { Task } from './Task.component';
 import './TasksList.component.css';
@@ -8,11 +9,10 @@ interface TasksListProps {
   onUpdate(task: TaskType): void;
 }
 
-export function TasksList({
-  tasks,
-  onUpdate,
-  onDelete,
-}: Readonly<TasksListProps>) {
+export const TasksList = forwardRef<
+  HTMLOListElement,
+  Readonly<TasksListProps>
+>(({ tasks, onUpdate, onDelete }, ref) => {
   const tasksList = tasks.map((task) => {
     return (
       <Task
@@ -26,7 +26,9 @@ export function TasksList({
 
   return (
     <form>
-      <ol className="tasks-list">{tasksList}</ol>
+      <ol ref={ref} className="tasks-list">
+        {tasksList}
+      </ol>
     </form>
   );
-}
+});

@@ -1,17 +1,26 @@
-import { useReducer } from 'react';
+import { useReducer, useRef } from 'react';
 import { CreateTask } from './CreateTask.component';
 import { TasksList } from './TasksList.component';
 import { tasks as initialTasks } from '../../dummy-data/tasks.dummy-data';
 import './TaskManager.component.css';
 import { Task } from '../../types/task.type';
+import { flushSync } from 'react-dom';
 
 export function TaskManager() {
+  const tasksListRef = useRef<HTMLOListElement>(null);
   const [tasks, dispatch] = useReducer(reducer, initialTasks);
 
   function handleCreate(taskName: string) {
-    dispatch({
-      type: 'create',
-      taskName,
+    // Force React to update (AKA flush) the DOM synchronously!
+    flushSync(() => {
+      dispatch({
+        type: 'create',
+        taskName,
+      });
+    });
+    tasksListRef.current?.lastElementChild?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
     });
   }
   function handleUpdate(task: Task) {
@@ -34,6 +43,7 @@ export function TaskManager() {
       <h2>Task manager</h2>
       <CreateTask onCreate={handleCreate} />
       <TasksList
+        ref={tasksListRef}
         onDelete={handleDelete}
         onUpdate={handleUpdate}
         tasks={tasks}

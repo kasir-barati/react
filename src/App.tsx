@@ -1,5 +1,4 @@
 import './App.css';
-import { TaskManager } from './components/task-manager-context/TaskManager.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -13,7 +12,8 @@ function App() {
 
   return (
     <>
-      <TaskManager />
+      {/* <Stopwatch /> */}
+      {/* <TaskManager /> */}
       {/* <Messenger /> */}
       {/* <Clock time={time} /> */}
       {/* TODO: fix performance issue of the WordCloud component */}

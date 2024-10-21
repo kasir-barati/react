@@ -242,7 +242,7 @@ Why multiple separate files?
 
 ### Steps
 
-1. Triggering a render.
+1. **Triggering a render**.
 
    - Occurs on:
 
@@ -259,14 +259,14 @@ Why multiple separate files?
 
    ![Delivering the diner's order to the kitchen](./assets/trigger-a-render.png)
 
-2. Rendering the component.
+2. **Rendering the component**.
 
    - This process is recursive; it will render all components used, until it reaches the last one. So that it know exactly what should it display on screen.
    - **Must** be a [pure calculation](#pure-components).
 
    ![Preparing the order in the kitchen](./assets/rendering-the-component.png)
 
-3. Committing to the DOM.
+3. **Committing to the DOM**.
 
    - For the initial render, ReactJS will use the [`appendChild()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild).
    - ReactJS only changes the DOM nodes if there’s a difference between renders.

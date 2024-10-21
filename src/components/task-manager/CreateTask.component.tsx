@@ -15,7 +15,7 @@ export function CreateTask({ onCreate }: Readonly<CreateTaskProps>) {
     if (!taskName || taskName?.trim()?.length === 0) {
       throw 'A task with no name, cannot create such a task!';
     }
-
+    setTaskName('');
     onCreate(taskName);
   }
 
