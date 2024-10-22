@@ -428,7 +428,9 @@ Do not use `useEffect` when:
 
 > [!NOTE]
 >
-> Props, state, and other values declared inside the component are reactive because they're calculated during rendering and participate in the ReactJS data flow. That's why we skipped `serverUrl` and did not add it to the `useEffect`'s dep array. It is not gonna change. [Same logic as here for why we did not add `ref`](#useeffect-examples).
+> Props, state, and other values declared inside the component are **reactive** because they're calculated during rendering and participate in the ReactJS data flow. That's why we skipped `serverUrl` and did not add it to the `useEffect`'s dep array. It is not gonna change. [Same logic as here for why we did not add `ref`](#useeffect-examples).
+
+### A `useEffect` that re-runs in response to some values but not others
 
 ## `useMemo`
 
@@ -451,6 +453,88 @@ Do not use `useEffect` when:
 ## `useSyncExternalStore`
 
 - A purpose-built hook for subscribing to an external store.
+
+## `useEffectEvent`
+
+> [!CAUTION]
+>
+> This API is experimental and is **NOT** available in a stable version of ReactJS yet.
+>
+> **Experimental versions of React may contain bugs. Don’t use them in production**.
+>
+> You can try it by upgrading ReactJS packages to the most recent experimental version:
+> `react@experimental`, `react-dom@experimental`, `eslint-plugin-react-hooks@experimental`.
+
+- Help us to separate non-reactive logic from the reactive `useEffect`'s logic.
+- Showing a notification to the user is a good example:
+
+  ```tsx
+  import { useState, useEffect } from 'react';
+  import { createConnection } from './create-connection';
+  import { showNotification } from './notifications.js';
+
+  const serverUrl = 'https://localhost:1234';
+
+  export function ChatRoom({ roomId, theme }) {
+    useEffect(() => {
+      const connection = createConnection(serverUrl, roomId);
+      connection.on('connected', () => {
+        showNotification('Connected!', theme);
+      });
+      connection.connect();
+      return () => connection.disconnect();
+    }, [roomId, theme]);
+
+    return <h1>Welcome to the {roomId} room!</h1>;
+  }
+  ```
+
+  When the `roomId` changes, the chat re-connects as you would expect. But since `theme` is also a dependency, the chat also re-connects every time you switch between the dark and the light `theme`!
+
+  ![Separating non-reactive and reactive from each other](./assets/split-reactive-and-non-reactive.png)
+
+  So here is how we can separate non-reactive part from react part in ReactJS:
+
+  ```tsx
+  import { useEffect, useEffectEvent } from 'react';
+  export function ChatRoom({ roomId, theme }) {
+    // The logic inside the callback passed to the useEffectEvent is not reactive.
+    // It always "sees" the latest values of your props and state.
+    const onConnected = useEffectEvent(() => {
+      showNotification('Connected!', theme);
+    });
+
+    useEffect(() => {
+      const connection = createConnection(serverUrl, roomId);
+      connection.on('connected', () => {
+        onConnected();
+      });
+      connection.connect();
+      return () => connection.disconnect();
+    }, [roomId]);
+
+    // ...
+  }
+  ```
+
+  > [!NOTE]
+  >
+  > All dependencies declared, no need to include `onConnected`. It ain't reactive and **MUST** be omitted from dependencies array.
+
+- Very similar to event handlers.
+- Are triggered by you from within `useEffect`s.
+- Lets you "break the chain" between the reactivity of `useEffect`s and code that should not be reactive.
+
+  In other word **only apply it to the lines of code that you do NOT wanna be reactive**.
+
+### Don'ts
+
+- Only call them from inside Effects.
+- Never pass them to other components or Hooks.
+
+  | Wrong                                                                                                                                       | Correct                                                                                                                                        |
+  | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+  | https://github.com/kasir-barati/react/blob/28e8d99b6c434213c0d0ff7495aaabc95262a613/.github/docs/examples/passing-useEffectEvent.jsx#L1-L24 | https://github.com/kasir-barati/react/blob/28e8d99b6c434213c0d0ff7495aaabc95262a613/.github/docs/examples/no-passing-useEffectEvent.jsx#L1-L24 |
 
 ## Custom hook
 
