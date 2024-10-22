@@ -15,16 +15,20 @@ function Game() {
 
     // Calculate all the next state in the event handler
     setCard(nextCard);
-    if (nextCard.gold) {
-      if (goldCardCount <= 3) {
-        setGoldCardCount(goldCardCount + 1);
-      } else {
-        setGoldCardCount(0);
-        setRound(round + 1);
-        if (round === 5) {
-          alert('Good game!');
-        }
-      }
+    if (!nextCard.gold) {
+      return;
+    }
+
+    if (goldCardCount <= 3) {
+      setGoldCardCount(goldCardCount + 1);
+      return;
+    }
+
+    setGoldCardCount(0);
+    setRound(round + 1);
+
+    if (round === 5) {
+      alert('Good game!');
     }
   }
 
