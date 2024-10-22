@@ -204,6 +204,10 @@ const MyInput = forwardRef((props, ref) => {
      - Submit an HTTP POST request to buy a product.
    - Contain "side effects"; change the program's state caused by a specific user action (e.g. clicking on a button).
 
+> [!TIP]
+>
+> When you ain't sure whether some code should be in a `useEffect` or in an event handler, ask yourself why this code needs to run. **Use `useEffect`s** only for code that should run **because the component was displayed to the user**. Otherwise go for event handlers.
+
 ### How to use `useEffect`
 
 1. Define it: some code which runs after each commit.
@@ -368,7 +372,7 @@ Do not use `useEffect` when:
   }, [firstName, lastName]);
   ```
 
-- Transforming data for rendering.
+- [Transforming data for rendering](./better-reactjs-app.md#first-scenario----transforming-data).
 - Fetching data: for this specific case you can define your custom hook. Read [fetching data](./fetching-data.md) to learn more.
 - To **handle user events**.
 - Logics that should only run once when the application starts. You can put it outside your components.
@@ -396,6 +400,28 @@ Do not use `useEffect` when:
 
 1. Start synchronizing something.
 2. Stop synchronizing it.
+
+## `useMemo`
+
+- The function you wrap in `useMemo` runs during rendering, so this only works for [pure calculations](./components.md#pure-components) -- no side-effect.
+- How to tell if a calculation is expensive? add a `console.time` to measure the time spent in a piece of code:
+
+  ![useMemo](./assets/useMemo-time-calc.png)
+
+  1. If the overall logged time adds up to a significant amount (say, `1ms` or more).
+  2. Then it is probably a candidate to memoize.
+
+- `useMemo` will not make the first render faster.
+- Only helps your component to skip unnecessary work on updates.
+- After using it it is a good idea to double check the performance of our app.
+  1. Add the `console.time` again around the `useMemo`.
+  2. Keep in mind that your machine is probably faster than your users's machine.
+  3. Use artificial slowdowns like [_CPU Throttling_](https://developer.chrome.com/blog/new-in-devtools-61/#throttling).
+- Measuring performance in dev env will not give you the most accurate results.
+
+## `useSyncExternalStore`
+
+- A purpose-built hook for subscribing to an external store.
 
 ## Custom hook
 

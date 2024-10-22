@@ -410,3 +410,7 @@ function isNumber(n: unknown): n is number {
 - In this [messenger app](https://codesandbox.io/p/sandbox/solitary-sun-v4lkfz) when you change the recipient your textbox won't be emptied. So you might send a message to the wrong person. So to solve that problem we can signal to ReactJS that it needs to rerender the `ChatBox` component when the state called `to`, changes by [specifying `key={to.email}`](https://github.com/kasir-barati/react/blob/main/src/components/chat/Messenger.component.tsx#L24).
 
   You could just lift up the `text` state to the `Messenger` component and set it to empty string in `handleSelect` handler. **But** I am pretty sure that this is not the right move, just imagine how many states you need to then lift up.
+
+> [!TIP]
+>
+> Whenever you try to keep two different state variables synchronized, try lifting state up instead!
