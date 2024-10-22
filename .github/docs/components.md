@@ -56,6 +56,14 @@
 - The markup syntax you’ve seen above is called [`JSX`](./jsx.md).
 - Components can store information temporarily. For this we use [states](./state.md).
 
+## Lifecycle
+
+Components may:
+
+1. Mount: when it's added to the screen.
+2. Update: when it receives new props or state, usually in response to an interaction.
+3. Unmount: when it's removed from the screen.
+
 ## Props
 
 - Can pass properties to a component, things like objects, arrays, functions, and even JSX:

@@ -87,6 +87,30 @@ Here is how ReactJS behaves in the worst case scenario:
 | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | https://github.com/kasir-barati/react/blob/ae9872016f40c0538437c9a9e957a0a9ce039b98/.github/docs/examples/useEffect-sync-with-isOnline.jsx#L1-L32 | https://github.com/kasir-barati/react/blob/ae9872016f40c0538437c9a9e957a0a9ce039b98/.github/docs/examples/useSyncExternalStore-instead-of-useEffect.jsx#L1-L28 |
 
+### Sixth scenario -- do not mix side-effects
+
+- Resist adding unrelated logic to your `useEffect` only because this logic needs to run at the same time as an Effect you already wrote.
+- E.g., let's say you want to
+
+  - Send an analytics event when the user visits the `ChatRoom`.
+  - You already have an `useEffect` that depends on `roomId`.
+  - You might feel tempted to add the analytics call there too.
+
+| Bad                                                                                                                                            | Good                                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| https://github.com/kasir-barati/react/blob/c4d9b9cf5e800b0389fa7579a36fcd96130527bd/.github/docs/examples/mixed-logics-in-useEffect.jsx#L1-L14 | https://github.com/kasir-barati/react/blob/c4d9b9cf5e800b0389fa7579a36fcd96130527bd/.github/docs/examples/logics-separated-in-two-useEffects.jsx#L1-L16 |
+
+- In the above example, deleting one `useEffect` would not break the other `useEffect`'s logic.
+- A good indication that they synchronize different things, and so it made sense to split them up.
+- On the other hand, if you split up a cohesive piece of logic into separate Effects:
+  - The code may look "cleaner" but will be more difficult to maintain.
+  - This is why you should think whether the processes are same or separate.
+  - Not whether the code looks cleaner.
+
+> [!NOTE]
+>
+> Each `useEffect` in your code should represent a separate and independent synchronization process.
+
 ## Remove unnecessary state
 
 - When something can be calculated from the existing props or state, do not put it in state. Instead, calculate it during rendering.

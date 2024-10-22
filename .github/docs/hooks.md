@@ -326,7 +326,7 @@ const MyInput = forwardRef((props, ref) => {
    >
    > [This](https://react.dev/learn/synchronizing-with-effects#putting-it-all-together) is a very interesting example about cleanup functions and closures in the ReactJS doc.
 
-### Examples
+### `useEffect` examples
 
 A ReactJS component which accepts a `isPlaying` prop so it will tell HTML's `video` element that it should whether plays the video or not:
 
@@ -353,6 +353,8 @@ export function VideoPlayer({ src, isPlaying }) {
 > Why `ref` is missing from the dep array? Because ReactJS guarantees you'll always get the same object from the same `useRef` call on every render. So it will never by itself cause the Effect to re-run. Therefore no need to add it.
 >
 > Although you can add it too. And one other note, if parent component sends a ref prop, then you have to add it to your dep array since parent component might send different ref based on some conditions.
+>
+> **Please note that a mutable value like `ref.current` cannot be a dependency.**
 
 "External system" here we synchronized with ReactJS state was the browser media API.
 
@@ -388,6 +390,15 @@ Do not use `useEffect` when:
 
   This `useEffect` should be removed. Then you can add this logic to a button's event handler. This illustrates that if remounting breaks the logic of your application, this usually uncovers existing bugs.
 
+- Do not add global/mutable values in your dep array:
+
+  - A mutable value like `location.pathname` can’t be a dependency.
+  - It's mutable, so it can change at any time completely outside of the ReactJS rendering data flow.
+  - Changing it would not trigger a rerender of your component.
+  - Even if you specified it in the dependencies, ReactJS would not know to re-synchronize the Effect when it changes.
+  - This also breaks the rules of ReactJS; reading mutable data during rendering (which is when you calculate the dependencies) breaks [purity of rendering](./components.md#pure-components).
+  - Instead, you should read and subscribe to an external mutable value with [`useSyncExternalStore`](#usesyncexternalstore).
+
 > [!NOTE]
 >
 > Removing unnecessary Effects will make your code:
@@ -398,8 +409,26 @@ Do not use `useEffect` when:
 
 ### Lifecycle
 
+> [!TIP]
+>
+> Think about each `useEffect` independently from your component's lifecycle.
+
 1. Start synchronizing something.
 2. Stop synchronizing it.
+
+![Lifecycle of a useEffect](./assets/useEffect-lifecycle.png)
+
+> [!TIP]
+>
+> - Do **NOT** think from the perspective of a component's lifecycle.
+> - Rather, always focus on a single start/stop cycle at a time.
+> - It should **NOT** matter whether a component is mounting, updating, or unmounting.
+> - All you need to do is to describe how to start synchronization and how to stop it.
+> - If you do it well, your `useEffect` will be resilient to being started and stopped as many times as it's needed.
+
+> [!NOTE]
+>
+> Props, state, and other values declared inside the component are reactive because they're calculated during rendering and participate in the ReactJS data flow. That's why we skipped `serverUrl` and did not add it to the `useEffect`'s dep array. It is not gonna change. [Same logic as here for why we did not add `ref`](#useeffect-examples).
 
 ## `useMemo`
 
