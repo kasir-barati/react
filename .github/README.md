@@ -8,3 +8,7 @@
 - [ReactJS hooks](./docs/hooks.md).
 - [JSX](./docs/jsx.md).
 - [States in ReactJS](./docs/state.md).
+
+> [!IMPORTANT]
+>
+> Keep this file in sync with `index.md`.
