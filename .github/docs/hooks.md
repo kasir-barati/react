@@ -678,9 +678,18 @@ Do not use `useEffect` when:
 
 ## Custom hook
 
+![ReactJS app is constituted from components and components utilize hooks](./assets/reactjs-app-components-hooks.png)
+
+- hide the gnarly details of how you deal with some external system or a browser API.
+- Hook names always start with `use`.
+- You should give `use` prefix to a function (and thus make it a Hook) **if it uses at least one Hook inside of it**.
+- Needs to be [pure](./components.md#pure-components).
+
 > [!TIP]
 >
 > You should be writing less `useEffect` hooks and more composable, reusable custom hooks.
+
+### Examples of custom hook
 
 - Fetching data from external resources:
 
@@ -714,3 +723,83 @@ Do not use `useEffect` when:
     return { data, loading, error };
   }
   ```
+
+  > [!NOTE]
+  >
+  > ReactJS team is working to take care of fetching data for us in the near future too. [Read this](https://react.dev/learn/reusing-logic-with-custom-hooks#will-react-provide-any-built-in-solution-for-data-fetching) for more info.
+
+- Connectivity state:
+
+  1. Showing a notification to the user if their network connection has accidentally gone off while they were using our app.
+  2. Implement a Save button that will become disabled and show "Reconnecting…" instead of "Save" while the network is off.
+
+  Same need, two different component, same logic, same code. Thus we're gonna write our own `useOnlineStatus` hook:
+
+  https://github.com/kasir-barati/react/blob/464cad6e5684c049a00768f22bd99b73664e91e6/.github/docs/examples/useSyncExternalStore-instead-of-useEffect.jsx#L2-L20
+
+### How to know that my custom hook is good
+
+**Keep your custom Hooks focused on concrete high-level use cases**:
+
+1. Choose your custom hook's name: pick a clear name, if not possible then it might mean that it is too coupled to the rest of your component's logic, and is not yet ready to be extracted.
+2. **Avoid** creating and using custom lifecycle hooks:
+
+   E.g. this `useMount` custom hook act as alternatives and convenience wrappers for the `useEffect` API itself.
+
+   ```tsx
+   import { useEffect } from 'react';
+
+   export function useMount(fn) {
+     useEffect(() => {
+       fn();
+     }, []); // Buggy, fn is not added to the dependencies array!
+   }
+   ```
+
+3. A good custom hook makes the calling code more declarative by constraining/limiting what it does.
+
+   In other word they are focused on the intent, rather than implementation details. This in return enables us to migrate our code easier to leverage new features of ReactJS since we only need to change our custom hook's implementation.
+
+4. Deciding on how to split your code, draw borders between different parts of your code is not something written on a rock. There is usually more than one way to do the same thing.
+
+   <table>
+     <thead>
+       <tr>
+         <th>Everything in one file -- no custom hook</th>
+         <th>Refactored version -- <code>useFadeIn</code> custom hook</th>
+         <th>Refactored version -- <code>useFadeIn</code> + <code>useAnimationLoop</code> custom hook</th>
+         <th>Refactored version -- <code>FadeInAnimation</code> class</th>
+       </tr>
+     </thead>
+     <tbody>
+       <tr>
+         <td>
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome.tsx#L1-L49
+         </td>
+         <td>
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome-1-custom-hook.tsx#L1-L14
+           <br />
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/use-fade-in.hook.ts#L1-L44
+         </td>
+         <td>
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome-2-custom-hook.tsx#L1-L14
+           <br />
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/use-fade-in-using-useAnimationLoop.hook.ts#L1-L19
+           <br />
+           https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/use-animation-loop.hook.tsx#L1-L40
+         </td>
+         <td>
+           https://github.com/kasir-barati/react/blob/6ed67db64e14e52c9072fb8586b57346dc4041c2/.github/docs/examples/welcome-3-custom-hook.tsx#L1-L14
+           <br />
+           https://github.com/kasir-barati/react/blob/6ed67db64e14e52c9072fb8586b57346dc4041c2/.github/docs/examples/use-fade-in-using-class.hook.ts#L1-L17
+           <br />
+           https://github.com/kasir-barati/react/blob/6ed67db64e14e52c9072fb8586b57346dc4041c2/.github/docs/examples/fade-in-animation.ts#L1-L37
+         </td>
+     </tbody>
+   </table>
+
+   - `useEffect`s let you connect ReactJS to external systems.
+   - The more coordination between `useEffect`s is needed (e.g., to chain multiple animations), the more it makes sense to extract that logic out of `useEffect`s and hooks completely like what we did above.
+   - The code we extracted becomes the "external system".
+   - Simpler `useEffect`s; they only need to send messages to the system you've moved outside ReactJS.
+   - This example can be added using plain CSS, no need to go down this path. But it shows you how to write custom hooks and separate concerns.
