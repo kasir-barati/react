@@ -765,22 +765,27 @@ Do not use `useEffect` when:
    <table>
      <thead>
        <tr>
-         <th>Everything in one file -- no custom hook</th>
-         <th>Refactored version -- <code>useFadeIn</code> custom hook</th>
-         <th>Refactored version -- <code>useFadeIn</code> + <code>useAnimationLoop</code> custom hook</th>
-         <th>Refactored version -- <code>FadeInAnimation</code> class</th>
+         <th>Approach</th>
+         <th>Code/Implementation</th>
        </tr>
      </thead>
      <tbody>
        <tr>
+         <th>Everything in one file -- no custom hook</th>  
          <td>
            https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome.tsx#L1-L49
          </td>
+       </tr>
+       <tr>
+         <th>Refactored version -- <code>useFadeIn</code> custom hook</th>
          <td>
            https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome-1-custom-hook.tsx#L1-L14
            <br />
            https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/use-fade-in.hook.ts#L1-L44
          </td>
+       </tr>
+       <tr>
+         <th>Refactored version -- <code>useFadeIn</code> + <code>useAnimationLoop</code> custom hook</th>
          <td>
            https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/welcome-2-custom-hook.tsx#L1-L14
            <br />
@@ -788,6 +793,9 @@ Do not use `useEffect` when:
            <br />
            https://github.com/kasir-barati/react/blob/416924056696bee195186c6d2e58123e15f6d5d6/.github/docs/examples/use-animation-loop.hook.tsx#L1-L40
          </td>
+       </tr>
+       <tr>
+         <th>Refactored version -- <code>FadeInAnimation</code> class</th>
          <td>
            https://github.com/kasir-barati/react/blob/6ed67db64e14e52c9072fb8586b57346dc4041c2/.github/docs/examples/welcome-3-custom-hook.tsx#L1-L14
            <br />
