@@ -430,7 +430,147 @@ Do not use `useEffect` when:
 >
 > Props, state, and other values declared inside the component are **reactive** because they're calculated during rendering and participate in the ReactJS data flow. That's why we skipped `serverUrl` and did not add it to the `useEffect`'s dep array. It is not gonna change. [Same logic as here for why we did not add `ref`](#useeffect-examples).
 
-### A `useEffect` that re-runs in response to some values but not others
+### Removing unnecessary dependencies from dependency array
+
+![Changing useEffect dependencies array](./assets/changing-useEffect-dep-array-process.png)
+
+- `useEffect` "react" to reactive values.
+- To remove a dependency, prove that it's not a dependency; You cannot "choose" the dependencies of your Effect. Every reactive value used by your `useEffect` must be declared in your dependency list.
+
+  - Remove it from prop and move it outside of component:
+
+    | Reactive                                                                                                                             | Not reactive anymore                                                                                                                     |
+    | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+    | https://github.com/kasir-barati/react/blob/1f798c10ab0e9bd8cd6893d8f9a9ad6471968b4b/.github/docs/examples/reactive-roomId.jsx#L1-L14 | https://github.com/kasir-barati/react/blob/1f798c10ab0e9bd8cd6893d8f9a9ad6471968b4b/.github/docs/examples/not-reactive-roomId.jsx#L1-L13 |
+
+#### Questions that will help you to decide
+
+- Should this code be moved to an event handler?
+
+  ```tsx
+  import { useState, useEffect } from 'react';
+
+  export function Form() {
+    const [submitted, setSubmitted] = useState(false);
+
+    useEffect(() => {
+      if (submitted) {
+        // Avoid using useEffect for event-specific logic.
+        // This could have been done simply by using onSubmit event handler!
+        post('/api/register');
+        showNotification('Successfully registered!');
+      }
+    }, [submitted]);
+
+    function handleSubmit() {
+      setSubmitted(true);
+    }
+
+    // ...
+  }
+  ```
+
+- Is your `useEffect` doing several unrelated things?
+
+  ```tsx
+  import { useState } from 'react';
+
+  export function ShippingForm({ country }) {
+    const [cities, setCities] = useState(null);
+    const [city, setCity] = useState(null);
+    const [areas, setAreas] = useState(null);
+
+    useEffect(() => {
+      let ignore = false;
+      fetch(`/api/cities?country=${country}`)
+        .then((response) => response.json())
+        .then((json) => {
+          if (!ignore) {
+            setCities(json);
+          }
+        });
+      // Avoid using a single useEffect to synchronizes two independent processes
+      if (city) {
+        fetch(`/api/areas?city=${city}`)
+          .then((response) => response.json())
+          .then((json) => {
+            if (!ignore) {
+              setAreas(json);
+            }
+          });
+      }
+      return () => {
+        ignore = true;
+      };
+    }, [country, city]);
+
+    // ...
+  }
+  ```
+
+- Are you reading some state to calculate the next state?
+
+  | Defective                                                                                                                                                        | Fixed version                                                                                                                                                      |
+  | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+  | https://github.com/kasir-barati/react/blob/fe5c5da0f36af446677d30a92424ef346011800f/.github/docs/examples/wrong-way-of-calculating-state-in-useEffect.jsx#L1-L20 | https://github.com/kasir-barati/react/blob/fe5c5da0f36af446677d30a92424ef346011800f/.github/docs/examples/correct-way-of-calculating-state-in-useEffect.jsx#L1-L20 |
+
+- Do you want to read a value without "reacting" to its changes?
+
+  Here we are using `useEffectEvent` in order to prevent from reconnecting to server just because user toggled on/off changed their "muted" setting.
+
+  ```tsx
+  import { useState, useEffect, useEffectEvent } from 'react';
+
+  function ChatRoom({ roomId }) {
+    const [messages, setMessages] = useState([]);
+    const [isMuted, setIsMuted] = useState(false);
+
+    const onMessage = useEffectEvent((receivedMessage) => {
+      setMessages((previousMessages) => [
+        ...previousMessages,
+        receivedMessage,
+      ]);
+      if (!isMuted) {
+        playSound();
+      }
+    });
+
+    useEffect(() => {
+      const connection = createConnection();
+
+      connection.connect();
+      connection.on('message', onMessage);
+
+      return () => connection.disconnect();
+    }, [roomId]);
+    // ...
+  }
+  ```
+
+  > [!NOTE]
+  >
+  > You can employ this approach for event handler props too ([read more](https://react.dev/learn/removing-effect-dependencies#wrapping-an-event-handler-from-the-props)).
+
+- Does some reactive value change unintentionally?
+
+  ```tsx
+  import { useEffect } from 'react';
+
+  export function ChatRoom({ roomId }) {
+    // Move this variable declaration inside the useEffect block
+    const options = {
+      serverUrl: serverUrl,
+      roomId: roomId,
+    };
+
+    // ReactJS will call this useEffect on each rerender
+    useEffect(() => {
+      const connection = createConnection(options);
+      connection.connect();
+      // ...
+    }, [options]);
+  }
+  ```
 
 ## `useMemo`
 
