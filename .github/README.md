@@ -11,4 +11,4 @@
 
 > [!IMPORTANT]
 >
-> Keep this file in sync with `index.md`.
+> Keep `.github/README.md` in sync with `index.md`. But be careful with relative paths; `./docs/state.md` should become `./.github/docs/state.md`.
