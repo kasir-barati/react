@@ -1,5 +1,9 @@
 # Why this subject matters?
 
+> [!NOTE]
+>
+> ReactJS team is working to take care of fetching data for us in the near future too. [Read this](https://react.dev/learn/reusing-logic-with-custom-hooks#will-react-provide-any-built-in-solution-for-data-fetching) for more info.
+
 Fetching data inside a `useEffect` has the following downsides:
 
 <table>

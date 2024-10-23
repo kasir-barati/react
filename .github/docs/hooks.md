@@ -796,10 +796,6 @@ Do not use `useEffect` when:
   }
   ```
 
-  > [!NOTE]
-  >
-  > ReactJS team is working to take care of fetching data for us in the near future too. [Read this](https://react.dev/learn/reusing-logic-with-custom-hooks#will-react-provide-any-built-in-solution-for-data-fetching) for more info.
-
 - Connectivity state:
 
   1. Showing a notification to the user if their network connection has accidentally gone off while they were using our app.
