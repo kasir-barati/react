@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 export function Note({ id }) {
   const [note, setNote] = useState('');
 
