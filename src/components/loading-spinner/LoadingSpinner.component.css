@@ -1,0 +1,191 @@
+@keyframes sun-wave-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes colorBallMoveX {
+  0% {
+    background-position: 0% 0;
+    transform: translate(0px, -50%);
+  }
+  100% {
+    background-position: 100% 0;
+    transform: translate(50px, -50%);
+  }
+}
+
+@keyframes rotate-full-moon {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes animate-red-moon {
+  0% {
+    box-shadow: -72px 0 red inset;
+  }
+  100% {
+    box-shadow: 48px 0 red inset;
+  }
+}
+
+.loader-eclipsing-moon {
+  --font-size: 48px;
+  --o-size: 30px;
+
+  display: inline-block;
+  font-size: var(--font-size);
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: #fff;
+  position: relative;
+  align-self: center;
+
+  &::before {
+    display: inline-block;
+    content: '';
+    position: absolute;
+    inset-block-end: 8px;
+    inset-inline-start: 34px;
+    block-size: var(--o-size);
+    inline-size: var(--o-size);
+    border-radius: 50%;
+    animation: animate-red-moon 1s linear infinite;
+  }
+}
+
+.loader-full-moon {
+  position: relative;
+  display: inline-block;
+  block-size: 100px;
+  inline-size: 100px;
+  border-radius: 100%;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgb(220, 220, 220) 40%,
+    rgb(170, 170, 170) 98%,
+    rgb(10, 10, 10) 100%
+  );
+
+  &::before {
+    position: absolute;
+    inset-inline-start: 0;
+    content: '';
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: 100%;
+    box-shadow:
+      0 -10px 20px 20px #ffffff40 inset,
+      0 -5px 15px 10px #ffffff50 inset,
+      0 -2px 5px #ffffff80 inset,
+      0 -3px 2px #ffffffbb inset,
+      0 2px 0px #ffffff,
+      0 2px 3px #ffffff,
+      0 5px 5px #ffffff90,
+      0 10px 15px #ffffff60,
+      0 10px 20px 20px #ffffff40;
+    filter: blur(3px);
+    animation: 2s rotate-full-moon linear infinite;
+  }
+}
+
+.loader-moon-to-sun {
+  position: relative;
+  block-size: 100px;
+  inline-size: 100px;
+  display: inline-block;
+
+  &::before {
+    position: absolute;
+    content: '';
+    inline-size: 48px;
+    block-size: 48px;
+    border-radius: 100%;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
+    transform: translate(-5px, -50%);
+    background: linear-gradient(to right, #fff 50%, yellow 50%)
+      no-repeat;
+    background-size: 200% auto;
+    background-position: 100% 0;
+    animation: colorBallMoveX 1.5s linear infinite alternate;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 50%;
+    inset-block-start: 0;
+    transform: translateX(-50%);
+    inline-size: 2px;
+    block-size: 100%;
+    background: yellow;
+  }
+}
+
+.loader-sun {
+  position: relative;
+  inline-size: 48px;
+  block-size: 48px;
+  background-color: yellow;
+  display: block;
+  margin-block: 20px;
+  margin-inline: auto;
+  animation: sun-wave-rotation 1s ease-in-out infinite reverse;
+
+  &::before {
+    content: '';
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    transform: rotate(45deg);
+    position: absolute;
+    inline-size: 48px;
+    block-size: 48px;
+    background-color: yellow;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inline-size: 32px;
+    block-size: 32px;
+    border-radius: 50%;
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
+    background-color: #fff;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.loader-blue-planet {
+  position: relative;
+  inline-size: 150px;
+  block-size: 150px;
+  background-color: blue;
+  border-radius: 100%;
+  box-shadow:
+    0 0 30px 4px rgba(0, 0, 0, 0.5) inset,
+    0 5px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: inline-block;
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: 45%;
+    top: -40%;
+    background-color: #fff;
+    animation: wave 5s linear infinite;
+  }
+  &:before {
+    border-radius: 30%;
+    background-color: rgba(255, 255, 255, 0.4);
+    animation: wave 5s linear infinite;
+  }
+}

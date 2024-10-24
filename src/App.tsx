@@ -1,4 +1,5 @@
 import './App.css';
+import { Post } from './components/post/Post.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <>
+      <Post />
       {/* <Stopwatch /> */}
       {/* <TaskManager /> */}
       {/* <Messenger /> */}
