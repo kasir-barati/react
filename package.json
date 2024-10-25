@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
+    "cities-list": "^1.0.3",
     "classnames": "^2.5.1",
     "react": "^18.3.1",
     "react-d3-cloud": "^1.0.6",
