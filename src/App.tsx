@@ -1,5 +1,5 @@
 import './App.css';
-import { Post } from './components/post/Post.component';
+import { NormalSearch } from './components/search/NormalSearch.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-      <Post />
+      <NormalSearch />
       {/* <Stopwatch /> */}
       {/* <TaskManager /> */}
       {/* <Messenger /> */}

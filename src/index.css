@@ -13,6 +13,8 @@
 :root {
   --sm-border-radius: 0.5rem;
   --md-border-radius: 1rem;
+  --text-color: white;
+  --bg-color: #1f1f1f;
 }
 
 body {
@@ -20,8 +22,8 @@ body {
   justify-content: center;
   padding-block: 1rem;
   padding-inline: 1rem;
-  background-color: #1f1f1f;
-  color: white;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 
   @media screen and (width > 700px) {
     padding-inline: 4rem;
