@@ -1,6 +1,6 @@
 import cities from 'cities-list';
 import { ChangeEvent, MouseEvent, useState } from 'react';
-import './NormalSearch.component.css';
+import './Search.component.css';
 
 const citiesArray = Object.keys(cities);
 

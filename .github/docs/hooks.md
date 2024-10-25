@@ -1,4 +1,19 @@
-# React hooks
+# Table of content
+
+[Go back to main page](../../index.md).
+
+- [Intro](#react-hooks).
+- [`useState`](#usestate).
+- [`useReducer](#usereducer).
+- [`useContext`](#usecontext).
+- [`useRef`](#useref).
+- [`useEffect`](#useeffect).
+- [`useMemo`](#usememo).
+- [`useSyncExternalStore`](#usesyncexternalstore).
+- [`useEffectEvent`](#useeffectevent).
+- [Custom hooks](#custom-hook).
+
+## React hooks
 
 - Hooks are special functions that let your components use React features.
 - We have two kind of component: stateful, and stateless.
@@ -185,9 +200,9 @@ const MyInput = forwardRef((props, ref) => {
 
 - Synchronize with external systems:
   - Send an analytics log.
-- Effects let you specify side effects that are **caused by rendering itself, rather than by a particular event**.
+- `useEffect`s let you specify side effects that are **caused by rendering itself, rather than by a particular event**.
 - E.g. in a social media application like Telegram sending a message in the chat is an event because it is directly caused by the user clicking a specific button. However, setting up a server connection is an effect because it should happen no matter which interaction caused the component to appear.
-- Effects **run at the end of a commit** after the screen updates (learn more about commit [here](./components.md#steps)).
+- `useEffect`s **run at the end of a commit** after the screen updates (learn more about commit [here](./components.md#steps)).
 
   In other word, **`useEffect` "delays" a piece of code from running until that render is reflected on the screen**.
 
@@ -206,7 +221,7 @@ const MyInput = forwardRef((props, ref) => {
 
 > [!TIP]
 >
-> When you ain't sure whether some code should be in a `useEffect` or in an event handler, ask yourself why this code needs to run. **Use `useEffect`s** only for code that should run **because the component was displayed to the user**. Otherwise go for event handlers.
+> <a id="goldenRuleForDecidingOnUsingUseEffect" href="#goldenRuleForDecidingOnUsingUseEffect">#</a> When you ain't sure whether some code should be in a `useEffect` or in an event handler, ask yourself why this code needs to run. **Use `useEffect`s** only for code that should run **because the component was displayed to the user**. Otherwise go for event handlers.
 
 ### How to use `useEffect`
 
