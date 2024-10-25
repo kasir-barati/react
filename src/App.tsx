@@ -1,5 +1,5 @@
 import './App.css';
-import { DebouncingSearch } from './components/search/DebouncingSearch.component';
+import { LodashDebounceSearch } from './components/search/LodashDebounceSearch.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-      <DebouncingSearch />
+      <LodashDebounceSearch />
       {/* <Stopwatch /> */}
       {/* <TaskManager /> */}
       {/* <Messenger /> */}
