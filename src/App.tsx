@@ -1,5 +1,5 @@
 import './App.css';
-import { NormalSearch } from './components/search/NormalSearch.component';
+import { DebouncingSearch } from './components/search/DebouncingSearch.component';
 
 function App() {
   // const [time, setTime] = useState(getTime());
@@ -13,7 +13,7 @@ function App() {
 
   return (
     <>
-      <NormalSearch />
+      <DebouncingSearch />
       {/* <Stopwatch /> */}
       {/* <TaskManager /> */}
       {/* <Messenger /> */}

@@ -1,16 +1,18 @@
 import cities from 'cities-list';
-import { ChangeEvent, MouseEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, useRef, useState } from 'react';
 import './Search.component.css';
 
 const citiesArray = Object.keys(cities);
 
-export function NormalSearch() {
+export function DebouncingSearch() {
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const [city, setCity] = useState('');
+  const timeoutIdRef = useRef<number>();
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     const searchQuery = e.target.value;
 
+    clearTimeout(timeoutIdRef.current);
     setCity(searchQuery);
 
     if (isSearchFieldEmpty(searchQuery)) {
@@ -18,17 +20,19 @@ export function NormalSearch() {
       return;
     }
 
-    // FIXME: Problem child is the following setter call!
-    setFilteredCities(
-      citiesArray.filter((city) =>
-        city.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-    );
+    timeoutIdRef.current = setTimeout(() => {
+      setFilteredCities(
+        citiesArray.filter((city) =>
+          city.toLowerCase().includes(searchQuery.toLowerCase()),
+        ),
+      );
+    }, 500);
   }
   function handleClick(e: MouseEvent<HTMLDataListElement>) {
     if (e.target instanceof HTMLOptionElement) {
       setCity(e.target.value);
       setFilteredCities([]);
+      clearTimeout(timeoutIdRef.current);
     }
   }
 
