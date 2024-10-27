@@ -58,3 +58,15 @@ export function Report({ item }) {
     </figure>
   );
 }
+
+const Report = memo(function Report({ item }) {
+  function handleClick() {
+    sendReport(item);
+  }
+
+  return (
+    <figure>
+      <Chart onClick={handleClick} />
+    </figure>
+  );
+});
