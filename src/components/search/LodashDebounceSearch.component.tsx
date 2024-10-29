@@ -6,6 +6,7 @@ import {
   useCallback,
   useState,
 } from 'react';
+import { isStringEmpty } from '../../utils/is-string-empty.util';
 import './Search.component.css';
 
 const citiesArray = Object.keys(cities);
@@ -15,12 +16,15 @@ export function LodashDebounceSearch() {
   const [city, setCity] = useState('');
   const debouncedCitiesFilter = useCallback(
     debounce((searchQuery: string) => {
+      console.log('I will be called only once every 1500ms!');
       setFilteredCities(
-        citiesArray.filter((city) =>
-          city.toLowerCase().includes(searchQuery.toLowerCase()),
-        ),
+        citiesArray.filter((city) => {
+          return city
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+        }),
       );
-    }, 500),
+    }, 1500),
     [],
   );
 
@@ -29,7 +33,7 @@ export function LodashDebounceSearch() {
 
     setCity(searchQuery);
 
-    if (isSearchFieldEmpty(searchQuery)) {
+    if (isStringEmpty(searchQuery)) {
       setFilteredCities([]);
       return;
     }
@@ -75,8 +79,4 @@ export function LodashDebounceSearch() {
       </form>
     </section>
   );
-}
-
-function isSearchFieldEmpty(searchQuery?: string): boolean {
-  return !searchQuery || searchQuery?.trim()?.length === 0;
 }

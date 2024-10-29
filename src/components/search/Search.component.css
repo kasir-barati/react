@@ -45,6 +45,9 @@
     border-radius: 0 0 var(--border-radius) var(--border-radius);
     color: black;
     overflow-y: auto;
+    max-block-size: 200px;
+    scrollbar-color: red transparent;
+    scrollbar-width: thin;
     display: block;
     position: absolute;
     inline-size: 100%;

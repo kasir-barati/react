@@ -1,5 +1,6 @@
 import cities from 'cities-list';
 import { ChangeEvent, MouseEvent, useState } from 'react';
+import { isStringEmpty } from '../../utils/is-string-empty.util';
 import './Search.component.css';
 
 const citiesArray = Object.keys(cities);
@@ -13,7 +14,7 @@ export function NormalSearch() {
 
     setCity(searchQuery);
 
-    if (isSearchFieldEmpty(searchQuery)) {
+    if (isStringEmpty(searchQuery)) {
       setFilteredCities([]);
       return;
     }
@@ -64,8 +65,4 @@ export function NormalSearch() {
       </form>
     </section>
   );
-}
-
-function isSearchFieldEmpty(searchQuery?: string): boolean {
-  return !searchQuery || searchQuery?.trim()?.length === 0;
 }
