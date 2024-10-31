@@ -31,8 +31,11 @@ Fetching data inside a `useEffect` has the following downsides:
         </ul>
       </td>
     </tr>
-    <tr>
-      <td>You have network waterfalls</td>
+    <tr id="fetchingDataNetworkWaterfall">
+      <td>
+        <a href="#fetchingDataNetworkWaterfall">#</a>
+        You have network waterfalls
+      </td>
       <td>
         <ol>
           <li>ReactJS renders the parent component.</li>

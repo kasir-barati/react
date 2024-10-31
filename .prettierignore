@@ -63,3 +63,5 @@ baseline.json
 **/*.yml
 **/*.yaml
 **/*LICENCE*
+/.nx/cache
+/.nx/workspace-data

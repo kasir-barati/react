@@ -212,7 +212,7 @@ Components may:
 | Default | `export default function Button() {}` | `import Button from './Button.js';`     |
 | Named   | `export function Button() {}`         | `import { Button } from './Button.js';` |
 
-- There are scenarios where you'll be better of using default export. E.g. lazy loading, read [this Q&A on reddit](https://www.reddit.com/r/reactjs/comments/15xvavb/how_do_you_lazy_load_a_named_export_with_react/).
+- There are scenarios where you'll be better of using default export. E.g. [lazy loading](./server-components.md#lazy), read [this Q&A on reddit](https://www.reddit.com/r/reactjs/comments/15xvavb/how_do_you_lazy_load_a_named_export_with_react/).
 
 ### Conventions
 

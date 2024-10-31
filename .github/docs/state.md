@@ -174,6 +174,7 @@ Here's a little example to show you how this might cause you confusion. In this 
 >
 > - Instead of too many rerenders, ReactJS **batch** them.
 > - **ReactJS does not batch across multiple intentional events like clicks** -- each click is handled separately.
+> - Merging or batching won't happen for state changes outside of event handlers ([ref](https://github.com/facebook/react/issues/10231#issuecomment-316644950)).
 >
 > And when it rerenders and we click again this is what will happen again:
 >
@@ -403,6 +404,11 @@ function isNumber(n: unknown): n is number {
 #### Lifting state up
 
 - Sharing state between multiple components.
+
+> [!CAUTION]
+>
+> Do **NOT** keep transient state like forms and whether an item is hovered at the top of your tree or in a global state library.
+
 - E.g. when you have a [faq section](https://codesandbox.io/p/sandbox/gw6dyj) and you wanna show user the answer to one question at a time. So when user click to see the answer it.
 
   In that example you can see that I have moved the state of which faq is open to the parent component and pass a handler to it so that I can change which faq should be open.

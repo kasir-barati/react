@@ -1,8 +1,21 @@
-# Better ReactJS App
+# Table of content
+
+[Go back to main page](../../index.md).
+
+- [Intro](#intro).
+- [Remove unnecessary `useEffect`s](#remove-unnecessary-useeffects).
+- [Remove unnecessary states](#remove-unnecessary-state).
+- [Memoize expensive calculation](#memoize-expensive-calculation).
+- [When to not use `useMemo`/`useCallback`](#when-to-not-use-usememousecallback).
+
+## Intro
 
 By doing the followings your ReactJS app will be more performant, easier to develop and maintain, and simpler to onboard new devs.
 
 ## Remove unnecessary `useEffect`s
+
+1. I wanna emphasis on [this golden rule](./hooks.md#goldenRuleForDecidingOnUsingUseEffect) about when to use `useEffect` hook in your ReactJS app.
+2. Most performance problems in ReactJS apps are caused by chains of updates originating from `useEffect`s that cause your components to render over and over.
 
 ### First scenario -- transforming data
 
@@ -117,6 +130,14 @@ Here is how ReactJS behaves in the worst case scenario:
 
 ## [Memoize](./glossary.md#memoizationGlossary) expensive calculation
 
+> [!TIP]
+>
+> In order to get a realistic sense of what's actually slowing down your app you need to:
+>
+> 1. Run ReactJS in production mode.
+> 2. Disable [React Developer Tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en).
+> 3. Use devices similar to the ones your app's users have.
+
 ### First scenario -- recalculation
 
 | Not optimized                                                                                                                             | Optimized                                                                                                                                   |
@@ -125,3 +146,50 @@ Here is how ReactJS behaves in the worst case scenario:
 
 - `getFilteredTodos` is slow, or maybe we have a lot of todos.
 - We should not recalculate `getFilteredTodos` for each new rerender.
+
+## When to not use `useMemo`/`useCallback`
+
+In apps with many small, isolated updates, you’ll likely find both [`useMemo`](./hooks.md#usememo) and [`useCallback`](./hooks.md#usecallback) useful to keep things responsive.
+
+In contrast, apps with [larger updates](./glossary.md#webAppsWithLargeUpdates) generally do **NOT** benefit much from these hooks, as the benefit of memoizing values or functions becomes negligible.
+
+> [!NOTE]
+>
+> There are scenarios where we cannot avoid using `useCallback`. Like [here](./hooks.md#optimizing-a-search-box-with-usecallback). So this suggestion is not a divine decree or gospel truth ;).
+
+### Principles that help you to remove unnecessary memoizations
+
+You can see different scenarios on how memoization can work [here in this codesandbox](https://codesandbox.io/p/sandbox/dreamy-ace-qq7xtg). And here are some pointers without going into details and showing any example:
+
+1. A component visually wraps other components.
+
+   Accept JSX as children in that wrapper component.
+
+   If the wrapper component updates its own state.
+
+   ReactJS knows that its children do **NOT** need to rerender unless their props where affected.
+
+2. Prefer local state.
+
+   Do **NOT** [lift state up](./state.md#lifting-state-up) any further than necessary.
+
+3. Keep your rendering logic pure.
+
+   If re-rendering a component causes a problem or produces some noticeable [visual artifact](./glossary.md#visualArtifactGlossary).
+
+   It's a bug in your component!
+
+   Fix the bug instead of adding memoization.
+
+4. [Avoid unnecessary `useEffect`s](#remove-unnecessary-useeffects) that update state like what we've discussed [here](#first-scenario----transforming-data).
+5. Remove unnecessary dependencies.
+
+   E.g., instead of memoization, it's often simpler to move some object/function inside an `useEffect` or outside the component.
+
+### How to find out which components benefit the most from memoization
+
+Use [Google Chrome's Profiler](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) to debug your ReactJS app:
+
+1. Open devTools and move to the Profiler tab.
+2. Open your app in the browser and check Profiler tab.
+3. You should be able to see each components and decide to optimize that component further.

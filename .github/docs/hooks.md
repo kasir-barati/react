@@ -11,6 +11,7 @@
 - [`useMemo`](#usememo).
 - [`useSyncExternalStore`](#usesyncexternalstore).
 - [`useEffectEvent`](#useeffectevent).
+- [`useCallback`](#usecallback).
 - [Custom hooks](#custom-hook).
 
 ## React hooks
@@ -36,6 +37,9 @@
 
 - Update it with `setCount(previousCount => previousCount + 1)` and not `setCount(count + 1)`. Because if we call the latter case twice it is not gonna increase it by two since the count stays the same value as it was while it got rendered.
 - In `StrictMode`, React will call your initializer function twice in order to help you find accidental impurities. This is development-only behavior and does not affect production.
+
+  To learn more about it watch this YouTube video: https://youtu.be/VzpRSXoM2E8.
+
 - [Examples](https://react.dev/reference/react/useState#examples-basic).
 - Would not merge objects. Instead it overrides the _state_. In other word in _React_, _state_ is considered **read-only**, so you should **replace it rather than mutate**. Thus this will break your app:
 
@@ -521,7 +525,7 @@ Do not use `useEffect` when:
 
 ![Changing useEffect dependencies array](./assets/changing-useEffect-dep-array-process.png)
 
-- `useEffect` "react" to reactive values.
+- `useEffect` "react" to [reactive values](./glossary.md#reactiveValuesGlossary).
 - To remove a dependency, prove that it's not a dependency; You cannot "choose" the dependencies of your Effect. Every reactive value used by your `useEffect` must be declared in your dependency list.
 
   - Remove it from prop and move it outside of component:
@@ -661,6 +665,10 @@ Do not use `useEffect` when:
 
 ## `useMemo`
 
+- Works hand in hand with [`useCallback`](#usecallback) mostly.
+  - `useMemo` is completely useless if the props passed to your component are always different.
+- It calls the function passed to it and memoize the returned result!
+  - **Unlike `useCallback`**.
 - The function you wrap in `useMemo` runs during rendering, so this only works for [pure calculations](./components.md#pure-components) -- no side-effect.
 - How to tell if a calculation is expensive? add a `console.time` to measure the time spent in a piece of code:
 
@@ -763,6 +771,71 @@ Do not use `useEffect` when:
   | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
   | https://github.com/kasir-barati/react/blob/28e8d99b6c434213c0d0ff7495aaabc95262a613/.github/docs/examples/passing-useEffectEvent.jsx#L1-L24 | https://github.com/kasir-barati/react/blob/28e8d99b6c434213c0d0ff7495aaabc95262a613/.github/docs/examples/no-passing-useEffectEvent.jsx#L1-L24 |
 
+## [`useCallback`](https://react.dev/reference/react/useCallback)
+
+> [!IMPORTANT]
+>
+> **Rely on useCallback as a performance optimization**. Look at [this](aRealWorldExampleOfLodashDebouncing) for more context. There, by adding `useCallback` we only improve our apps performance.
+>
+> Explain it like I am five: `useCallback`'s main purpose in life is to make your app faster and not functional!
+
+- Cache a function definition between rerenders.
+- It will accept a function and a dependencies array.
+  - If you have some [reactive values](./glossary.md#reactiveValuesGlossary) which you're using them inside your function they should listed in dependencies array.
+- Used most of the times in combination with [`useMemo`](#usememo).
+  - Caches the function itself. Unlike `useMemo`, it does **NOT** call the function you provide.
+
+> [!IMPORTANT]
+>
+> <a id="useCallbackWillNotPreventFunctionCreation" href="#useCallbackWillNotPreventFunctionCreation">#</a> `useCallback` does **NOT** prevent creating the function. You're always creating a function (and that's fine!), but ReactJS ignores it and gives you back a cached function if nothing changed ([ref](https://react.dev/reference/react/useCallback#should-you-add-usecallback-everywhere)).
+>
+> With this in mind you have two paths in front of you:
+>
+> 1. Memoize every function with `useCallback` so to eliminate the question of whether I should use it or not.
+>    - Repercussion: harder to read codebase.
+> 2. Use it when it is needed.
+>    - Consequence: requires more thoughtful coding which is a good thing if you ask me.
+
+### Optimizing a search box with `useCallback`
+
+Like when you need to prevent ReactJS from recreating the function on each rerender, because if it does it will break something else. A very good example of this is with [Lodash](https://lodash.com/)'s `debounce` function:
+
+- In [this code](../../src/components/search/LodashDebounceSearch.component.tsx#L16) we are trying to debounce the filter operation.
+
+> [!NOTE]
+>
+> High-level goal is to provide a fluid experience for users to pick which city they live in.
+>
+> One of the ways to achieve this is to debounce filter function call.
+>
+> It is always a good idea to step back and ask yourself questions like "what is the high level goal? Why is this list of cities being presented to the user?" so that you won't get lost in over-engineering or over-thinking.
+
+- And we need to cancel the ones that were debounced previously by user when they typed something in search box.
+- Note that we do not want to perform a filter operation per key press. That's gonna be too many ([Read this](./server-components.md#aRealWorldExampleOfLodashDebouncing) to learn more).
+- But if we redefine the function on each render `Lodash.debounce` is not gonna be able to pick up on changes and cancel the one debounced filter operation before the current render.
+- So we use `useCallback` to help Lodash. This way it will not recreate a new function each time. So it can see that it has it already defined and if we debounce a new one it will cancel the one before it automatically for us.
+
+> [!NOTE]
+>
+> You can also find a simple artificial scenario in [ReactJS's doc](https://react.dev/reference/react/useCallback#examples-rerendering) where they are comparing the impact of useCallback hook..
+
+### Removing dependencies
+
+We tend to lower how many dependencies a `useCallback` has as a best practice:
+
+| Unnecessary dep                                                                                                                                              | Improved version                                                                                                                                              | Best                                                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| https://github.com/kasir-barati/react/blob/d4e1e0aac90df07de91ae54223b36efc7ac0dc90/.github/docs/examples/useCallback-with-unnecessary-dep.jsx#L1-L10        | https://github.com/kasir-barati/react/blob/d4e1e0aac90df07de91ae54223b36efc7ac0dc90/.github/docs/examples/useCallback-with-unnecessary-dep.jsx#L12-L18        | N/A                                                                                                                                                           |
+| https://github.com/kasir-barati/react/blob/a4d12859a8b0f4b21260a1e053a60a919c8381b8/.github/docs/examples/reactive-function-as-dep-in-useCallback.jsx#L1-L18 | https://github.com/kasir-barati/react/blob/a4d12859a8b0f4b21260a1e053a60a919c8381b8/.github/docs/examples/reactive-function-as-dep-in-useCallback.jsx#L20-L37 | https://github.com/kasir-barati/react/blob/a4d12859a8b0f4b21260a1e053a60a919c8381b8/.github/docs/examples/reactive-function-as-dep-in-useCallback.jsx#L39-L57 |
+
+### Calling `useCallback` in a loop
+
+| Broken `useCallback`                                                                                                                       | Fixed version                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| https://github.com/kasir-barati/react/blob/af3aa93a10527842e4dd36698cdab8352ab33589/.github/docs/examples/useCallback-in-a-loop.jsx#L1-L19 | https://github.com/kasir-barati/react/blob/af3aa93a10527842e4dd36698cdab8352ab33589/.github/docs/examples/useCallback-in-a-loop.jsx#L21-L37 |
+| https://github.com/kasir-barati/react/blob/af3aa93a10527842e4dd36698cdab8352ab33589/.github/docs/examples/useCallback-in-a-loop.jsx#L1-L19 | https://github.com/kasir-barati/react/blob/af3aa93a10527842e4dd36698cdab8352ab33589/.github/docs/examples/useCallback-in-a-loop.jsx#L39-L60 |
+| https://github.com/kasir-barati/react/blob/af3aa93a10527842e4dd36698cdab8352ab33589/.github/docs/examples/useCallback-in-a-loop.jsx#L1-L19 | https://github.com/kasir-barati/react/blob/36968ec55d01980ee5146b1e2ed904a091355f4a/.github/docs/examples/useCallback-in-a-loop.jsx#L62-L72 |
+
 ## Custom hook
 
 ![ReactJS app is constituted from components and components utilize hooks](./assets/reactjs-app-components-hooks.png)
@@ -775,6 +848,31 @@ Do not use `useEffect` when:
 > [!TIP]
 >
 > You should be writing less `useEffect` hooks and more composable, reusable custom hooks.
+
+> [!TIP]
+>
+> recommended to wrap them into a `useCallback`.
+>
+> ```tsx
+> function useRouter() {
+>   const { dispatch } = useContext(RouterStateContext);
+>   // ...
+>   const navigate = useCallback(
+>     (url) => dispatch({ type: 'navigate', url }),
+>     [dispatch],
+>   );
+>   // ...
+>   const goBack = useCallback(
+>     () => dispatch({ type: 'back' }),
+>     [dispatch],
+>   );
+>   // ...
+>   return {
+>     navigate,
+>     goBack,
+>   };
+> }
+> ```
 
 ### Examples of custom hook
 
