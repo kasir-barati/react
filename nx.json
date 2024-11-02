@@ -71,6 +71,11 @@
       "options": {
         "schema": "{workspaceRoot}/{projectRoot}/prisma/schema.prisma"
       }
+    },
+    "@nx/js:tsc": {
+      "cache": true,
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   }
 }

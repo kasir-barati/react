@@ -1,3 +1,5 @@
+// @ts-ignore
+import { sleep } from '@react/common';
 import { Prisma } from '../src/utils/prisma.util.mjs';
 import { Repo } from '../src/utils/repo.util.mjs';
 
@@ -15,7 +17,7 @@ import { Repo } from '../src/utils/repo.util.mjs';
 
   for (const title of titles) {
     await repo.createFeed(title);
-    await fakeSleep(1);
+    await sleep(1);
   }
 
   async function isSeeded() {
@@ -24,9 +26,3 @@ import { Repo } from '../src/utils/repo.util.mjs';
 })()
   .then(console.log.bind(this, 'Seeded.'))
   .catch(console.error.bind(this, 'Something went wrong!'));
-
-export function fakeSleep(milliseconds: number) {
-  return new Promise((resolve, _reject) => {
-    setTimeout(resolve, milliseconds);
-  });
-}

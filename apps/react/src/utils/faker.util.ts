@@ -3,9 +3,3 @@ export function fakeFetch<T>(data: T, delay: number) {
     setTimeout(() => resolve(data), delay);
   });
 }
-
-export function fakeSleep(milliseconds: number) {
-  return new Promise((resolve, _reject) => {
-    setTimeout(resolve, milliseconds);
-  });
-}

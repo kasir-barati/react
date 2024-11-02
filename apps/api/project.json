@@ -87,7 +87,15 @@
         "tsConfig": "{projectRoot}/tsconfig.json",
         "executeWith": "tsx"
       },
-      "dependsOn": ["prisma-push"]
+      "dependsOn": [
+        "prisma-push",
+        {
+          "projects": ["libs/common"],
+          "target": "build",
+          "dependencies": true,
+          "params": "ignore"
+        }
+      ]
     },
     "prisma-status": {
       "executor": "@nx-tools/nx-prisma:status"

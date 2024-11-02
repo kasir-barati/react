@@ -1,0 +1,11 @@
+{
+  "name": "@react/common",
+  "type": "module",
+  "main": "./src/index.js",
+  "version": "0.0.1",
+  "typings": "./src/index.d.ts",
+  "private": true,
+  "dependencies": {
+    "tslib": "^2.3.0"
+  }
+}
