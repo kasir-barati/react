@@ -17,8 +17,6 @@ export async function myFetch<Response, QueryString = undefined>({
 
   const response = await fetch(url);
 
-  console.log(response);
-
   if (!response.ok) {
     throw "Something's wrong in your API!";
   }

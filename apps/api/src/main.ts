@@ -1,10 +1,10 @@
 import cors from 'cors';
-import express from 'express';
+import express, { Request } from 'express';
 import { join } from 'path';
+import { Pagination } from './types';
 import { getEnvVariables } from './utils/env-variable.util.mjs';
 import { Prisma } from './utils/prisma.util.mjs';
 import { Repo } from './utils/repo.util.mjs';
-
 const app = express();
 const { port } = getEnvVariables();
 using repo = new Repo(Prisma.prismaClient);
@@ -16,12 +16,19 @@ app.use(
   express.static(join(import.meta.dirname, 'assets')),
 );
 
-app.get('/feeds', async (req, res) => {
-  const { page, limit } = req.query;
-  const feeds = await repo.getFeeds(Number(page), Number(limit));
+app.get(
+  '/feeds',
+  async (
+    req: Request<unknown, unknown, unknown, Pagination, unknown>,
+    res,
+  ) => {
+    const page = Number(req.query.page);
+    const limit = Number(req.query.limit);
+    const feeds = await repo.getFeeds(page, limit);
 
-  res.status(200).send({ data: feeds, page, limit });
-});
+    res.status(200).send({ data: feeds, page, limit });
+  },
+);
 
 app
   .listen(

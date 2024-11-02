@@ -92,7 +92,7 @@ export function InfiniteScrollFeed() {
       >({
         endpoint: FEED_FETCH_URL,
         queryStrings: {
-          page,
+          page: page + 1,
           limit: FEED_FETCH_LIMIT,
         },
       });
@@ -137,7 +137,7 @@ export function InfiniteScrollFeed() {
       >({
         endpoint: FEED_FETCH_URL,
         queryStrings: {
-          page,
+          page: page - 1,
           limit,
         },
       });
@@ -193,8 +193,6 @@ export function InfiniteScrollFeed() {
       )}
       <ul className={styles.feeds__list} ref={feedsListRef} id="test">
         {getFeedsResponses.map(({ data: feeds }) => {
-          console.log(feeds[0]);
-
           return feeds.map((feed) => (
             <li key={feed.id}>
               <a href="#">{feed.title}</a>
@@ -222,52 +220,50 @@ function isAtTheTopOfThe(element: HTMLUListElement | null) {
   return element && element.getBoundingClientRect().top >= 0;
 }
 function canWeFetch(page: number) {
-  return page * FEED_FETCH_LIMIT > MAXIMUM_FEED_COUNT;
+  return page !== 1;
 }
 
-// export function InfiniteScrollFeed() {
-//   async function loadPreviousItems() {
-//     if (loading || page <= 1) {
-//       return;
-//     }
+// Wrong approach: no need to throttle anything here. I was throttling it because I was unable to implement it in the first place :person_facepalming:.
+/*
+export function InfiniteScrollFeed() {
+  async function loadPreviousItems() {
+    if (loading || page <= 1) {
+      return;
+    }
+    setFeeds((prevItems) =>
+      [...prevItems, ...data].slice(0, MAXIMUM_FEED_COUNT),
+    );
+    setPage((previousPage) => previousPage - 1);
+    setLoading(false);
+  }
+  async function loadNextItems() {
+    if (loading) {
+      return;
+    }
+    console.log(page);
+    const data = await fakeFetch(genFeeds(50, page), 1000);
+    setPage((previousPage) => previousPage + 1);
+    setLoading(false);
+    setFeeds((prevItems) =>
+      // Truncate the array to keep only the newly fetched feeds
+      [...prevItems, ...data].slice(-MAXIMUM_FEED_COUNT),
+    );
+  }
+  const throttledHandleScroll = throttle(() => {
+    if (isCloseToTheEndOfThePage()) {
+      console.log('EEEEEENNNNNNDDDDDDD');
+      loadNextItems();
+    } else if (isCloseToTheTopOfThePage()) {
+      console.log('TTTTTTTOOOOOOOPPPPP');
+      loadPreviousItems();
+    }
+  }, 500);
 
-//     setFeeds((prevItems) =>
-//       [...prevItems, ...data].slice(0, MAXIMUM_FEED_COUNT),
-//     );
-//     setPage((previousPage) => previousPage - 1);
-//     setLoading(false);
-//   }
-//   async function loadNextItems() {
-//     if (loading) {
-//       return;
-//     }
-
-//     console.log(page);
-//     const data = await fakeFetch(genFeeds(50, page), 1000);
-
-//     setPage((previousPage) => previousPage + 1);
-//     setLoading(false);
-//     setFeeds((prevItems) =>
-//       // Truncate the array to keep only the newly fetched feeds
-//       [...prevItems, ...data].slice(-MAXIMUM_FEED_COUNT),
-//     );
-//   }
-
-//   const throttledHandleScroll = throttle(() => {
-//     if (isCloseToTheEndOfThePage()) {
-//       console.log('EEEEEENNNNNNDDDDDDD');
-//       loadNextItems();
-//     } else if (isCloseToTheTopOfThePage()) {
-//       console.log('TTTTTTTOOOOOOOPPPPP');
-//       loadPreviousItems();
-//     }
-//   }, 500);
-
-//   useEffect(() => {
-//     window.addEventListener('scroll', throttledHandleScroll);
-
-//     return () => {
-//       window.removeEventListener('scroll', throttledHandleScroll);
-//     };
-//   }, []);
-// }
+  useEffect(() => {
+    window.addEventListener('scroll', throttledHandleScroll);
+    return () => {
+      window.removeEventListener('scroll', throttledHandleScroll);
+    };
+  }, []);
+}
+ */
