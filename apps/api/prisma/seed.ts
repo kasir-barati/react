@@ -1,4 +1,3 @@
-// @ts-ignore
 import { sleep } from '@react/common';
 import { Prisma } from '../src/utils/prisma.util.mjs';
 import { Repo } from '../src/utils/repo.util.mjs';

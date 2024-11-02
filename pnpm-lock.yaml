@@ -14,6 +14,9 @@ importers:
       '@prisma/client':
         specifier: 5.21.1
         version: 5.21.1(prisma@5.21.1)
+      '@react/common':
+        specifier: link:libs/common
+        version: link:libs/common
       axios:
         specifier: ^1.6.0
         version: 1.7.7
