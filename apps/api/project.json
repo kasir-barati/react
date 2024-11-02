@@ -5,22 +5,40 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "compose:down": {
+      "command": "docker compose -f {projectRoot}/compose.yml down -v",
+      "parallelism": false,
+      "cache": false
+    },
+    "compose:up": {
+      "command": "docker compose -f {projectRoot}/compose.yml up -d",
+      "parallelism": false,
+      "cache": false
+    },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "parallel": false,
         "commands": [
           {
-            "command": "npx tsc --incremental --project ./apps/api/tsconfig.app.json"
+            "command": "rm -rf ${PWD}/dist/out-tsc/apps/{projectName}"
+          },
+          {
+            "command": "nx prisma-seed api"
+          },
+          {
+            "command": "npx tsc --incremental --project {projectRoot}/tsconfig.app.json"
           }
         ]
       },
-      "outputs": ["{workspaceRoot}/dist/out-tsc/apps/api/src/"]
+      "outputs": [
+        "{workspaceRoot}/dist/out-tsc/apps/{projectName}/src/"
+      ]
     },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
+      "dependsOn": ["compose:up", "build"],
       "options": {
         "buildTarget": "api:build",
         "runBuildTargetDependencies": false
@@ -33,6 +51,52 @@
           "buildTarget": "api:build:production"
         }
       }
+    },
+    "prisma-deploy": {
+      "executor": "@nx-tools/nx-prisma:deploy"
+    },
+    "prisma-format": {
+      "executor": "@nx-tools/nx-prisma:format"
+    },
+    "prisma-generate": {
+      "executor": "@nx-tools/nx-prisma:generate",
+      "options": {
+        "schema": "{projectRoot}/prisma/schema.prisma"
+      }
+    },
+    "prisma-migrate": {
+      "executor": "@nx-tools/nx-prisma:migrate",
+      "dependsOn": ["compose:up"]
+    },
+    "prisma-pull": {
+      "executor": "@nx-tools/nx-prisma:pull"
+    },
+    "prisma-push": {
+      "executor": "@nx-tools/nx-prisma:push"
+    },
+    "prisma-reset": {
+      "executor": "@nx-tools/nx-prisma:reset"
+    },
+    "prisma-resolve": {
+      "executor": "@nx-tools/nx-prisma:resolve"
+    },
+    "prisma-seed": {
+      "executor": "@nx-tools/nx-prisma:seed",
+      "options": {
+        "script": "{projectRoot}/prisma/seed.ts",
+        "tsConfig": "{projectRoot}/tsconfig.json",
+        "executeWith": "tsx"
+      },
+      "dependsOn": ["prisma-push"]
+    },
+    "prisma-status": {
+      "executor": "@nx-tools/nx-prisma:status"
+    },
+    "prisma-studio": {
+      "executor": "@nx-tools/nx-prisma:studio"
+    },
+    "prisma-validate": {
+      "executor": "@nx-tools/nx-prisma:validate"
     }
   }
 }

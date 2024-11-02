@@ -65,5 +65,12 @@
         "linter": "eslint"
       }
     }
+  },
+  "targetDefaults": {
+    "prisma-*": {
+      "options": {
+        "schema": "{workspaceRoot}/{projectRoot}/prisma/schema.prisma"
+      }
+    }
   }
 }

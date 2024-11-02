@@ -1,3 +1,7 @@
+export interface GetFeedsQueryString {
+  page: number;
+  limit: number;
+}
 export interface GetFeedsResponse {
   data: Feed[];
   page: number;

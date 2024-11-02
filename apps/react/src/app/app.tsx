@@ -1,3 +1,4 @@
+import { InfiniteScrollFeed } from '../components/post/InfiniteScrollFeed.component';
 import styles from './app.module.css';
 
 export function App() {
@@ -15,7 +16,7 @@ export function App() {
       {/* <TaskManager /> */}
       {/* <TaskManager /> */}
       {/* <WordCloud words={words} /> */}
-      {/* <InfiniteScrollFeed /> */}
+      <InfiniteScrollFeed />
       <section
         className={styles.btn}
         onClickCapture={() => {

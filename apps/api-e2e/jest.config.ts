@@ -1,3 +1,5 @@
+import type { Config } from 'jest';
+
 export default {
   displayName: 'api-e2e',
   preset: '../../jest.preset.cjs',
@@ -15,4 +17,4 @@ export default {
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: '../../coverage/api-e2e',
-};
+} satisfies Config;

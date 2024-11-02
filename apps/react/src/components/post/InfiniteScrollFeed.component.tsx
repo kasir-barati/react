@@ -1,11 +1,16 @@
-import { useState, useEffect, useRef } from 'react';
-import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.component';
-import { GetFeedsResponse } from '../../types/post.type';
+import { useEffect, useRef, useState } from 'react';
+import {
+  GetFeedsQueryString,
+  GetFeedsResponse,
+} from '../../types/post.type';
 import { isEndOfThePage } from '../../utils/get-scrollbar.util';
-import './InfiniteScrollFeed.module.css';
+import { myFetch } from '../../utils/my-fetch.util';
+import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.component';
+import styles from './InfiniteScrollFeed.module.css';
 
 const MAXIMUM_FEED_COUNT = 45;
 const FEED_FETCH_LIMIT = 15;
+const FEED_FETCH_URL = 'http://localhost:3333/feeds';
 
 export function InfiniteScrollFeed() {
   const [getFeedsResponses, setGetFeedsResponses] = useState<
@@ -37,7 +42,16 @@ export function InfiniteScrollFeed() {
       setIsLoading(true);
 
       // Here you can pass to the real API your desired page number like this: ex.com/api/feeds?page=1
-      const response = await fetch<GetFeedsResponse>();
+      const response = await myFetch<
+        GetFeedsResponse,
+        GetFeedsQueryString
+      >({
+        endpoint: FEED_FETCH_URL,
+        queryStrings: {
+          page: 1,
+          limit: FEED_FETCH_LIMIT,
+        },
+      });
 
       if (!ignore) {
         setGetFeedsResponses([response]);
@@ -65,12 +79,23 @@ export function InfiniteScrollFeed() {
 
       console.log('I am fetching NEW feeds');
 
+      const { page } =
+        getFeedsResponses[getFeedsResponses.length - 1];
       /*
         Here you can pass to the real API your desired page number like this: 
         const page = getFeedsResponses.map(response => response.page).pop()! + 1;
         const url = `ex.com/api/feeds?page=${page}`
       */
-      const response = await fetch<GetFeedsResponse>();
+      const response = await myFetch<
+        GetFeedsResponse,
+        GetFeedsQueryString
+      >({
+        endpoint: FEED_FETCH_URL,
+        queryStrings: {
+          page,
+          limit: FEED_FETCH_LIMIT,
+        },
+      });
 
       setGetFeedsResponses((previousGetFeedsResponses) =>
         [...previousGetFeedsResponses, response].slice(
@@ -89,6 +114,7 @@ export function InfiniteScrollFeed() {
 
       console.log('I am fetching OLD feeds');
 
+      const { page, limit } = getFeedsResponses[0];
       /* 
         Given that:
         - MAXIMUM_FEED_COUNT = 45
@@ -105,7 +131,16 @@ export function InfiniteScrollFeed() {
         const page = getFeedsResponses.map(response => response.page).shift()! - 1;
         const url = `ex.com/api/feeds?page=${page}`
       */
-      const response = await fetch<GetFeedsResponse>();
+      const response = await myFetch<
+        GetFeedsResponse,
+        GetFeedsQueryString
+      >({
+        endpoint: FEED_FETCH_URL,
+        queryStrings: {
+          page,
+          limit,
+        },
+      });
 
       setGetFeedsResponses((previousGetFeedsResponses) =>
         [response, ...previousGetFeedsResponses].slice(
@@ -149,13 +184,17 @@ export function InfiniteScrollFeed() {
   }, [isLoading]);
 
   return (
-    <section className="feeds">
-      <h2 className="feeds__header">Feed</h2>
+    <section className={styles.feeds}>
+      <h2 className={styles.feeds__header}>Feed</h2>
       {isLoading && isAtTheTopOfThe(feedsListRef.current) && (
-        <LoadingSpinnerMoonCraters className="feeds__loading-spinner" />
+        <LoadingSpinnerMoonCraters
+          className={styles['feeds__loading-spinner']}
+        />
       )}
-      <ul className="feeds__list" ref={feedsListRef} id="test">
+      <ul className={styles.feeds__list} ref={feedsListRef} id="test">
         {getFeedsResponses.map(({ data: feeds }) => {
+          console.log(feeds[0]);
+
           return feeds.map((feed) => (
             <li key={feed.id}>
               <a href="#">{feed.title}</a>
@@ -164,9 +203,11 @@ export function InfiniteScrollFeed() {
         })}
       </ul>
       {isLoading && isEndOfThePage() && (
-        <LoadingSpinnerMoonCraters className="feeds__loading-spinner" />
+        <LoadingSpinnerMoonCraters
+          className={styles['feeds__loading-spinner']}
+        />
       )}
-      <p className="states">
+      <p className={styles.states}>
         Pages:{' '}
         {getFeedsResponses
           .map((response) => response.page)
