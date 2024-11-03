@@ -1,13 +1,19 @@
-import { useState, useEffect } from 'react';
+import {
+  GetAllNewsQueryString,
+  News,
+  Paginated,
+} from '@react/common';
+import { useEffect, useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { myFetch } from '../../utils/my-fetch.util';
 import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.component';
-import { Feed } from '../../types/post.type';
-import { genFeeds } from '../../dummy-data/post.dummy-data';
-import { fakeFetch } from '../../utils/faker.util';
-import './InfiniteScrollbarFeed.component.css';
+import styles from './InfiniteScroll.module.css';
+
+const NEWS_FETCH_URL = 'http://localhost:3333/news';
+const NEWS_FETCH_LIMIT = 10;
 
 export function InfiniteScrollNews() {
-  // initial state
-  const [feeds, setFeeds] = useState<Feed[]>([]);
+  const [news, setNews] = useState<News[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [page, setPage] = useState(0);
@@ -16,7 +22,16 @@ export function InfiniteScrollNews() {
     setIsLoading(true);
 
     try {
-      const data = await fakeFetch(genFeeds(50), 1000);
+      const data = await myFetch<
+        Paginated<News>,
+        GetAllNewsQueryString
+      >({
+        endpoint: NEWS_FETCH_URL,
+        queryStrings: {
+          page: page + 1,
+          limit: NEWS_FETCH_LIMIT,
+        },
+      });
     } catch (error) {
       setError(error);
     } finally {
@@ -29,83 +44,28 @@ export function InfiniteScrollNews() {
   }, []);
 
   return (
-    <section className="feeds">
-      <h2 className="feeds__header">Feed</h2>
-      <ul className="feeds__list">
-        {feeds.map((item) => (
-          <li key={item.id}>
-            <a href="#">{item.title}</a>
-          </li>
-        ))}
-      </ul>
-      {isLoading && (
-        <LoadingSpinnerMoonCraters className="feeds__loading-spinner" />
-      )}
+    <section className={styles.data}>
+      <h2 className={styles.data__header}>Feed</h2>
+      <InfiniteScroll
+        dataLength={news.length}
+        next={fetchData}
+        hasMore={true}
+        endMessage={<p>No more news for today!</p>}
+        loader={
+          <LoadingSpinnerMoonCraters
+            className={styles['data__loading-spinner']}
+          />
+        }
+      >
+        <ul className={styles.data__list}>
+          {news.map((item) => (
+            <li key={item.id}>
+              <a href="#">{item.title}</a>
+            </li>
+          ))}
+        </ul>
+      </InfiniteScroll>
+      {!error && <p>Error: {String(error)}</p>}
     </section>
   );
 }
-
-// import throttle from 'lodash.throttle';
-// import {
-//   getHeightOfDocument,
-//   getScrollTop,
-// } from '../../utils/get-scrollbar.util';
-
-// const MAXIMUM_FEED_COUNT = 50;
-// export function InfiniteScrollFeed() {
-
-//   async function loadPreviousItems() {
-//     if (loading || page <= 1) {
-//       return;
-//     }
-
-//     setFeeds((prevItems) =>
-//       [...prevItems, ...data].slice(0, MAXIMUM_FEED_COUNT),
-//     );
-//     setPage((previousPage) => previousPage - 1);
-//     setLoading(false);
-//   }
-//   async function loadNextItems() {
-//     if (loading) {
-//       return;
-//     }
-
-//     console.log(page);
-//     const data = await fakeFetch(genFeeds(50, page), 1000);
-
-//     setPage((previousPage) => previousPage + 1);
-//     setLoading(false);
-//     setFeeds((prevItems) =>
-//       // Truncate the array to keep only the newly fetched feeds
-//       [...prevItems, ...data].slice(-MAXIMUM_FEED_COUNT),
-//     );
-//   }
-
-//   const throttledHandleScroll = throttle(() => {
-//     if (isCloseToTheEndOfThePage()) {
-//       console.log('EEEEEENNNNNNDDDDDDD');
-//       loadNextItems();
-//     } else if (isCloseToTheTopOfThePage()) {
-//       console.log('TTTTTTTOOOOOOOPPPPP');
-//       loadPreviousItems();
-//     }
-//   }, 500);
-
-//   useEffect(() => {
-//     window.addEventListener('scroll', throttledHandleScroll);
-
-//     return () => {
-//       window.removeEventListener('scroll', throttledHandleScroll);
-//     };
-//   }, []);
-// }
-
-// function isCloseToTheEndOfThePage() {
-//   return (
-//     getHeightOfDocument() + getScrollTop() >=
-//     getHeightOfDocument() - 200
-//   );
-// }
-// function isCloseToTheTopOfThePage() {
-//   return getScrollTop() <= 200;
-// }

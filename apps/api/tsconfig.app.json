@@ -5,11 +5,7 @@
     "module": "ESNext",
     "types": ["node", "express"]
   },
-  "include": [
-    "src/**/*.ts",
-    "src/utils/prisma.util.mts",
-    "src/utils/repo.util.mts"
-  ],
+  "include": ["src/**/*.ts", "src/**/*.mts"],
   "exclude": [
     "jest.config.ts",
     "src/**/*.spec.ts",

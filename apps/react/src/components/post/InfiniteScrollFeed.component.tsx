@@ -1,16 +1,15 @@
+import { Feed, GetFeedsQueryString, Paginated } from '@react/common';
 import { useEffect, useRef, useState } from 'react';
-import {
-  GetFeedsQueryString,
-  GetFeedsResponse,
-} from '../../types/post.type';
 import { isEndOfThePage } from '../../utils/get-scrollbar.util';
 import { myFetch } from '../../utils/my-fetch.util';
 import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.component';
-import styles from './InfiniteScrollFeed.module.css';
+import styles from './InfiniteScroll.module.css';
 
 const MAXIMUM_FEED_COUNT = 45;
 const FEED_FETCH_LIMIT = 15;
 const FEED_FETCH_URL = 'http://localhost:3333/feeds';
+
+type GetFeedsResponse = Paginated<Feed>;
 
 export function InfiniteScrollFeed() {
   const [getFeedsResponses, setGetFeedsResponses] = useState<
@@ -184,14 +183,14 @@ export function InfiniteScrollFeed() {
   }, [isLoading]);
 
   return (
-    <section className={styles.feeds}>
-      <h2 className={styles.feeds__header}>Feed</h2>
+    <section className={styles.data}>
+      <h2 className={styles.data__header}>Feed</h2>
       {isLoading && isAtTheTopOfThe(feedsListRef.current) && (
         <LoadingSpinnerMoonCraters
-          className={styles['feeds__loading-spinner']}
+          className={styles['data__loading-spinner']}
         />
       )}
-      <ul className={styles.feeds__list} ref={feedsListRef} id="test">
+      <ul className={styles.data__list} ref={feedsListRef} id="test">
         {getFeedsResponses.map(({ data: feeds }) => {
           return feeds.map((feed) => (
             <li key={feed.id}>
@@ -202,7 +201,7 @@ export function InfiniteScrollFeed() {
       </ul>
       {isLoading && isEndOfThePage() && (
         <LoadingSpinnerMoonCraters
-          className={styles['feeds__loading-spinner']}
+          className={styles['data__loading-spinner']}
         />
       )}
       <p className={styles.states}>

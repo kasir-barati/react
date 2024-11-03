@@ -1,17 +1,3 @@
-export interface GetFeedsQueryString {
-  page: number;
-  limit: number;
-}
-export interface GetFeedsResponse {
-  data: Feed[];
-  page: number;
-  limit: number;
-}
-export interface Feed {
-  id: string;
-  title: string;
-}
-
 export interface LatestPost {
   title: string;
   tags: string[];

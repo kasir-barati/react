@@ -3,6 +3,7 @@ import { Prisma } from '../src/utils/prisma.util.mjs';
 import { Repo } from '../src/utils/repo.util.mjs';
 
 (async () => {
+  const dummyDataLength = 1000;
   using repo = new Repo(Prisma.prismaClient);
 
   if (await isSeeded()) {
@@ -10,12 +11,16 @@ import { Repo } from '../src/utils/repo.util.mjs';
     return;
   }
 
-  const titles = new Array(1000).fill('').map((title, index) => {
-    return `Feed #${index + 1}`;
-  });
+  const feedTitles = new Array(dummyDataLength)
+    .fill('')
+    .map((title, index) => `Feed #${index + 1}`);
+  const newsTitles = new Array(dummyDataLength)
+    .fill('')
+    .map((title, index) => `News #${index + 1}`);
 
-  for (const title of titles) {
-    await repo.createFeed(title);
+  for (let i = 0; i < dummyDataLength; i++) {
+    await repo.createFeed(feedTitles[i]);
+    await repo.createNews(newsTitles[i]);
     await sleep(1);
   }
 

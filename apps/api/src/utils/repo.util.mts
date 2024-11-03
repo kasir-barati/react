@@ -1,4 +1,5 @@
 import { Feed, PrismaClient } from '@prisma/client';
+import { GetAllNewsQueryString, News } from '@react/common';
 
 export class Repo {
   constructor(private readonly prismaClient: PrismaClient) {}
@@ -16,6 +17,28 @@ export class Repo {
       LIMIT ${limit};`;
 
     return feeds;
+  }
+
+  async getNews({ limit, page }: GetAllNewsQueryString) {
+    const offset = (page - 1) * limit;
+
+    const news = await this.prismaClient.$queryRaw<{
+      data: News[];
+      total: number;
+    }>`SELECT
+        (SELECT COUNT(id) FROM public.news_articles) AS "total",
+        (
+          SELECT JSON_AGG(TO_JSONB(filtered_news_articles))
+          FROM (
+	        	SELECT *
+		        FROM public.news_articles
+		        WHERE title LIKE '%something%'
+	        	OFFSET 0
+	        	LIMIT 10
+	        ) as "filtered_news_articles"
+        )`;
+
+    return news;
   }
 
   /**
@@ -41,6 +64,15 @@ export class Repo {
     RETURNING *`;
 
     return feed;
+  }
+
+  async createNews(newsTitle: string) {
+    const news = await this.prismaClient
+      .$queryRaw<News>`INSERT INTO public.news_articles(id, created_at, updated_at, title)
+    VALUES(gen_random_uuid(), NOW(), NOW(), ${newsTitle})
+    RETURNING *`;
+
+    return news;
   }
 
   // https://github.com/tc39/proposal-explicit-resource-management

@@ -24,7 +24,7 @@
             "command": "rm -rf ${PWD}/dist/out-tsc/apps/{projectName}"
           },
           {
-            "command": "nx prisma-seed api"
+            "command": "nx prisma-generate api"
           },
           {
             "command": "npx tsc --incremental --project {projectRoot}/tsconfig.app.json"
@@ -38,18 +38,10 @@
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["compose:up", "build"],
+      "dependsOn": ["compose:up", "build", "prisma-seed"],
       "options": {
         "buildTarget": "api:build",
         "runBuildTargetDependencies": false
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "api:build:development"
-        },
-        "production": {
-          "buildTarget": "api:build:production"
-        }
       }
     },
     "prisma-deploy": {

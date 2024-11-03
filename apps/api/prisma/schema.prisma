@@ -21,3 +21,12 @@ model Feed {
 
   @@map("feeds")
 }
+
+model News {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  title     String
+
+  @@map("news_articles")
+}
