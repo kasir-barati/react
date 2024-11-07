@@ -1,7 +1,7 @@
 import { Feed, GetFeedsQueryString, Paginated } from '@react/common';
 import { Request, Router } from 'express';
-import { Prisma } from '../utils/prisma.util.mjs';
-import { Repo } from '../utils/repo.util.mjs';
+import { Prisma } from '../utils/prisma.util.js';
+import { Repo } from '../utils/repo.util.js';
 
 using repo = new Repo(Prisma.prismaClient);
 

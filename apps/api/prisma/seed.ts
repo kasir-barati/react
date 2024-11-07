@@ -1,6 +1,6 @@
 import { sleep } from '@react/common';
-import { Prisma } from '../src/utils/prisma.util.mjs';
-import { Repo } from '../src/utils/repo.util.mjs';
+import { Prisma } from '../src/utils/prisma.util.js';
+import { Repo } from '../src/utils/repo.util.js';
 
 (async () => {
   const dummyDataLength = 1000;

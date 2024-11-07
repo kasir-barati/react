@@ -1,11 +1,9 @@
-import nxFlatBase from '@nx/eslint-plugin/src/flat-configs/base.js';
-import nxFlatJavaScript from '@nx/eslint-plugin/src/flat-configs/javascript.js';
-import nxFlatTypeScript from '@nx/eslint-plugin/src/flat-configs/typescript.js';
+const nx = require('@nx/eslint-plugin');
 
-export default [
-  ...nxFlatBase,
-  ...nxFlatTypeScript,
-  ...nxFlatJavaScript,
+module.exports = [
+  ...nx.configs['flat/base'],
+  ...nx.configs['flat/typescript'],
+  ...nx.configs['flat/javascript'],
   {
     ignores: ['**/dist'],
   },
