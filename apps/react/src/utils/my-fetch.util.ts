@@ -11,6 +11,10 @@ export async function myFetch<Response, QueryString = undefined>({
 
   if (queryStrings) {
     for (const [key, value] of Object.entries(queryStrings)) {
+      if (value === undefined) {
+        continue;
+      }
+
       url.searchParams.set(key, String(value));
     }
   }

@@ -85,7 +85,8 @@
       "executor": "@nx-tools/nx-prisma:pull"
     },
     "prisma-push": {
-      "executor": "@nx-tools/nx-prisma:push"
+      "executor": "@nx-tools/nx-prisma:push",
+      "dependsOn": ["compose:up"]
     },
     "prisma-reset": {
       "executor": "@nx-tools/nx-prisma:reset"
@@ -97,16 +98,15 @@
       "executor": "@nx-tools/nx-prisma:seed",
       "options": {
         "script": "{projectRoot}/prisma/seed.ts",
-        "tsConfig": "{projectRoot}/tsconfig.json",
+        "tsConfig": "{projectRoot}/tsconfig.app.json",
         "executeWith": "tsx"
       },
       "dependsOn": [
         "prisma-push",
         {
-          "projects": ["libs/common"],
+          "projects": ["common"],
           "target": "build",
-          "dependencies": true,
-          "params": "ignore"
+          "dependencies": true
         }
       ]
     },

@@ -1,5 +1,5 @@
 import { Feed as PrismaFeed } from '@prisma/client';
-import { Pagination } from './shared.type';
+import { PaginationWithOffset } from './shared.type';
 
-export interface GetFeedsQueryString extends Pagination {}
+export interface GetFeedsQueryString extends PaginationWithOffset {}
 export type Feed = PrismaFeed;

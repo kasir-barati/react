@@ -19,26 +19,36 @@ export class Repo {
     return feeds;
   }
 
-  async getNews({ limit, page }: GetAllNewsQueryString) {
-    const offset = (page - 1) * limit;
+  async getNews({
+    previousCreatedAt,
+    nextCreatedAt,
+    limit,
+  }: GetAllNewsQueryString) {
+    if (nextCreatedAt) {
+      return await this.prismaClient.$queryRaw<
+        News[]
+      >`SELECT id, title, created_at as "createdAt", updated_at as "updatedAt"
+        FROM public.news_articles
+        WHERE created_at > ${nextCreatedAt}::timestamp
+        ORDER BY "createdAt" ASC
+        LIMIT ${limit};`;
+    }
+    if (!previousCreatedAt) {
+      return await this.prismaClient.$queryRaw<
+        News[]
+      >`SELECT id, title, created_at as "createdAt", updated_at as "updatedAt"
+        FROM public.news_articles
+        ORDER BY "createdAt" DESC
+        LIMIT ${limit};`;
+    }
 
-    const news = await this.prismaClient.$queryRaw<{
-      data: News[];
-      total: number;
-    }>`SELECT
-        (SELECT COUNT(id) FROM public.news_articles) AS "total",
-        (
-          SELECT JSON_AGG(TO_JSONB(filtered_news_articles))
-          FROM (
-	        	SELECT *
-		        FROM public.news_articles
-		        WHERE title LIKE '%something%'
-	        	OFFSET 0
-	        	LIMIT 10
-	        ) as "filtered_news_articles"
-        )`;
-
-    return news;
+    return await this.prismaClient.$queryRaw<
+      News[]
+    >`SELECT id, title, created_at as "createdAt", updated_at as "updatedAt"
+      FROM public.news_articles
+      WHERE created_at < ${previousCreatedAt}::timestamp
+      ORDER BY "createdAt" DESC
+      LIMIT ${limit};`;
   }
 
   /**

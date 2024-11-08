@@ -1,7 +1,7 @@
 import {
   GetAllNewsQueryString,
   News,
-  Paginated,
+  PaginatedWithSeekMethod,
 } from '@react/common';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -10,46 +10,84 @@ import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.com
 import styles from './InfiniteScroll.module.css';
 
 const NEWS_FETCH_URL = 'http://localhost:3333/news';
-const NEWS_FETCH_LIMIT = 10;
+const NEWS_FETCH_LIMIT = 20;
 
 export function InfiniteScrollNews() {
   const [news, setNews] = useState<News[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<unknown>(null);
-  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
 
   async function fetchData() {
-    setIsLoading(true);
+    const previousCreatedAt =
+      news.length !== 0
+        ? news[news.length - 1].createdAt.toString()
+        : undefined;
+    const { data } = await myFetch<
+      PaginatedWithSeekMethod<News>,
+      GetAllNewsQueryString
+    >({
+      endpoint: NEWS_FETCH_URL,
+      queryStrings: {
+        previousCreatedAt,
+        limit: NEWS_FETCH_LIMIT,
+      },
+    });
 
-    try {
-      const data = await myFetch<
-        Paginated<News>,
-        GetAllNewsQueryString
-      >({
-        endpoint: NEWS_FETCH_URL,
-        queryStrings: {
-          page: page + 1,
-          limit: NEWS_FETCH_LIMIT,
-        },
-      });
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+    // Because of the react-infinite-scroll-component we cannot skip previous items, we can just add to it.
+    /*
+     * I am not sure if this is gonna be an issue since if in one page you use this component three times;
+     * 1. In feeds.
+     * 2. For news.
+     * 3. For main content.
+     *
+     * You're gonna have a lot of data stored in RAM while user is probably interested in the most recent ones. But this is also how LinkedIn is implemented. They are optimizing their web app in someways but scrollbar thumb was getting smaller and smaller as I was scrolling downward.
+     */
+
+    setNews((previousNews) => [...previousNews, ...data]);
+
+    if (data.length === 0) {
+      setHasMore(false);
     }
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    let ignore = false;
 
+    (async () => {
+      const previousCreatedAt =
+        news.length !== 0
+          ? news[news.length - 1].createdAt.toString()
+          : undefined;
+      const { data } = await myFetch<
+        PaginatedWithSeekMethod<News>,
+        GetAllNewsQueryString
+      >({
+        endpoint: NEWS_FETCH_URL,
+        queryStrings: {
+          previousCreatedAt,
+          limit: NEWS_FETCH_LIMIT,
+        },
+      });
+
+      if (!ignore) {
+        setNews((previousNews) => [...previousNews, ...data]);
+      }
+    })();
+
+    return () => {
+      ignore = true;
+      setNews([]);
+      setHasMore(true);
+    };
+  }, []);
+  console.log(hasMore);
   return (
     <section className={styles.data}>
-      <h2 className={styles.data__header}>Feed</h2>
+      <h2 className={styles.data__header}>News</h2>
       <InfiniteScroll
         dataLength={news.length}
+        style={{ overflow: 'initial' }}
         next={fetchData}
-        hasMore={true}
+        hasMore={hasMore}
         endMessage={<p>No more news for today!</p>}
         loader={
           <LoadingSpinnerMoonCraters
@@ -65,7 +103,6 @@ export function InfiniteScrollNews() {
           ))}
         </ul>
       </InfiniteScroll>
-      {!error && <p>Error: {String(error)}</p>}
     </section>
   );
 }

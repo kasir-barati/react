@@ -1,4 +1,8 @@
-import { Feed, GetFeedsQueryString, Paginated } from '@react/common';
+import {
+  Feed,
+  GetFeedsQueryString,
+  PaginatedWithOffset,
+} from '@react/common';
 import { useEffect, useRef, useState } from 'react';
 import { isEndOfThePage } from '../../utils/get-scrollbar.util';
 import { myFetch } from '../../utils/my-fetch.util';
@@ -9,7 +13,7 @@ const MAXIMUM_FEED_COUNT = 45;
 const FEED_FETCH_LIMIT = 15;
 const FEED_FETCH_URL = 'http://localhost:3333/feeds';
 
-type GetFeedsResponse = Paginated<Feed>;
+type GetFeedsResponse = PaginatedWithOffset<Feed>;
 
 export function InfiniteScrollFeed() {
   const [getFeedsResponses, setGetFeedsResponses] = useState<
