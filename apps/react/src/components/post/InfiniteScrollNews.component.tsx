@@ -16,7 +16,7 @@ export function InfiniteScrollNews() {
   const [news, setNews] = useState<News[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
-  async function fetchData() {
+  async function fetchData(abortController?: AbortController) {
     const previousCreatedAt =
       news.length !== 0
         ? news[news.length - 1].createdAt.toString()
@@ -30,6 +30,7 @@ export function InfiniteScrollNews() {
         previousCreatedAt,
         limit: NEWS_FETCH_LIMIT,
       },
+      signal: abortController?.signal,
     });
 
     // Because of the react-infinite-scroll-component we cannot skip previous items, we can just add to it.
@@ -50,31 +51,12 @@ export function InfiniteScrollNews() {
   }
 
   useEffect(() => {
-    let ignore = false;
+    const abortController = new AbortController();
 
-    (async () => {
-      const previousCreatedAt =
-        news.length !== 0
-          ? news[news.length - 1].createdAt.toString()
-          : undefined;
-      const { data } = await myFetch<
-        PaginatedWithSeekMethod<News>,
-        GetAllNewsQueryString
-      >({
-        endpoint: NEWS_FETCH_URL,
-        queryStrings: {
-          previousCreatedAt,
-          limit: NEWS_FETCH_LIMIT,
-        },
-      });
-
-      if (!ignore) {
-        setNews((previousNews) => [...previousNews, ...data]);
-      }
-    })();
+    fetchData(abortController);
 
     return () => {
-      ignore = true;
+      abortController.abort();
       setNews([]);
       setHasMore(true);
     };

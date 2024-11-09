@@ -30,12 +30,6 @@ newsRoutes.get(
       nextCreatedAt,
       limit,
     });
-    console.log(
-      newsArticles,
-      previousCreatedAt,
-      nextCreatedAt,
-      limit,
-    );
     const response: PaginatedWithSeekMethod<News> = {
       data: newsArticles,
       limit,

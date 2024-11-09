@@ -1,11 +1,13 @@
 interface MyFetch<QueryString = undefined> {
   endpoint: string;
   queryStrings?: QueryString;
+  signal?: AbortSignal;
 }
 
 export async function myFetch<Response, QueryString = undefined>({
   endpoint,
   queryStrings,
+  signal,
 }: Readonly<MyFetch<QueryString>>) {
   const url = new URL(endpoint);
 
@@ -19,7 +21,9 @@ export async function myFetch<Response, QueryString = undefined>({
     }
   }
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    signal,
+  });
 
   if (!response.ok) {
     throw "Something's wrong in your API!";
