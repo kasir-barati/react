@@ -79,7 +79,7 @@ export function InfiniteScrollNews() {
       setHasMore(true);
     };
   }, []);
-  console.log(hasMore);
+
   return (
     <section className={styles.data}>
       <h2 className={styles.data__header}>News</h2>

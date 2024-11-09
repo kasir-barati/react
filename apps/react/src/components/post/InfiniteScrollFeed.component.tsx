@@ -80,8 +80,6 @@ export function InfiniteScrollFeed() {
 
       setIsLoading(true);
 
-      console.log('I am fetching NEW feeds');
-
       const { page } =
         getFeedsResponses[getFeedsResponses.length - 1];
       /*
@@ -114,8 +112,6 @@ export function InfiniteScrollFeed() {
       }
 
       setIsLoading(true);
-
-      console.log('I am fetching OLD feeds');
 
       const { page, limit } = getFeedsResponses[0];
       /* 
@@ -243,7 +239,6 @@ export function InfiniteScrollFeed() {
     if (loading) {
       return;
     }
-    console.log(page);
     const data = await fakeFetch(genFeeds(50, page), 1000);
     setPage((previousPage) => previousPage + 1);
     setLoading(false);
@@ -254,10 +249,8 @@ export function InfiniteScrollFeed() {
   }
   const throttledHandleScroll = throttle(() => {
     if (isCloseToTheEndOfThePage()) {
-      console.log('EEEEEENNNNNNDDDDDDD');
       loadNextItems();
     } else if (isCloseToTheTopOfThePage()) {
-      console.log('TTTTTTTOOOOOOOPPPPP');
       loadPreviousItems();
     }
   }, 500);
