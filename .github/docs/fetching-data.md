@@ -82,3 +82,54 @@ Fetching data inside a `useEffect` has the following downsides:
 
 - [useEffect: some issues with data fetching in Effects?](https://dev.to/amrguaily/useeffect-some-issues-with-data-fetching-in-effects-21nn)
 - [Do we simply not fetch with useEffect anymore?](https://www.reddit.com/r/nextjs/comments/1bb56ek/do_we_simply_not_fetch_with_useeffect_anymore/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
+
+# Fetching data approaches
+
+1. Fetching and ignoring the result with a variable inside `useEffect`:
+
+   ```tsx
+   useEffect(() => {
+     let ignore = false;
+     (async () => {
+       const data = await fetch('example.com/products');
+       if (!ignore) {
+         setProducts(data);
+       }
+     })();
+     return () => {
+       ignore = true;
+     };
+   }, []);
+   ```
+
+   You can see how it is done [here](../../apps/react/src/components/post/InfiniteScrollFeed.component.tsx#L41).
+
+2. Use `AbortController` API inside `useEffect` instead:
+
+   ```tsx
+   useEffect(() => {
+     const abortController = new AbortController();
+     fetch('example.com/api', {
+       signal: abortController.signal,
+     })
+       .then((data) => setProducts(data))
+       .catch(console.error);
+     return () => {
+       abortController.abort();
+     };
+   }, []);
+   ```
+
+   You can see how I did it [here](../../apps/react/src/components/post/InfiniteScrollNews.component.tsx#L54).
+
+3. Or you can simply ditch the whole headache of dealing with `useEffect` and use [TanStack Query](https://tanstack.com/query/latest) instead:
+
+   ```tsx
+   const { isPending, error, data } = useQuery({
+     queryKey: ['products'],
+     queryFn: () =>
+       fetch('https://example/products').then((res) => res.json()),
+   });
+   ```
+
+   Note that we ain't catching errors as TanStack Query does handle that for use and we'll get back our errors in `error` variable.

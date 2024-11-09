@@ -6,7 +6,8 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
-    "types": ["vite/client", "vitest"]
+    "types": ["vite/client", "vitest"],
+    "lib": ["ESNext.Disposable", "DOM"]
   },
   "files": [],
   "include": [],
