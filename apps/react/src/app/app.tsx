@@ -1,3 +1,6 @@
+import { Bounce, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { InfiniteScrollNews } from '../components/post/InfiniteScrollNews.component';
 import styles from './app.module.css';
 
 export function App() {
@@ -16,7 +19,7 @@ export function App() {
       {/* <TaskManager /> */}
       {/* <WordCloud words={words} /> */}
       {/* <InfiniteScrollFeed /> */}
-      {/* <InfiniteScrollNews /> */}
+      <InfiniteScrollNews />
       <section
         className={styles.btn}
         onClickCapture={() => {
@@ -32,6 +35,19 @@ export function App() {
           <code>onClickCapture</code> VS <code>onClick</code>
         </button>
       </section>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
     </>
   );
 }

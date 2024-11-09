@@ -5,6 +5,7 @@ import {
 } from '@react/common';
 import { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { toast } from 'react-toastify';
 import { myFetch } from '../../utils/my-fetch.util';
 import { LoadingSpinnerMoonCraters } from '../loading-spinner/LoadingSpinner.component';
 import styles from './InfiniteScroll.module.css';
@@ -16,6 +17,26 @@ export function InfiniteScrollNews() {
   const [news, setNews] = useState<News[]>([]);
   const [hasMore, setHasMore] = useState(true);
 
+  async function refreshData() {
+    const { data } = await myFetch<
+      PaginatedWithSeekMethod<News>,
+      GetAllNewsQueryString
+    >({
+      endpoint: NEWS_FETCH_URL,
+      queryStrings: {
+        previousCreatedAt: undefined,
+        limit: NEWS_FETCH_LIMIT,
+      },
+    });
+
+    if (data[0].createdAt === news[0].createdAt) {
+      toast('Wow, we do not have any fresh news!', { type: 'info' });
+      return;
+    }
+
+    toast("You've your fresh news!");
+    setNews(data);
+  }
   async function fetchData(abortController?: AbortController) {
     const previousCreatedAt =
       news.length !== 0
@@ -67,15 +88,28 @@ export function InfiniteScrollNews() {
       <h2 className={styles.data__header}>News</h2>
       <InfiniteScroll
         dataLength={news.length}
-        style={{ overflow: 'initial' }}
         next={fetchData}
         hasMore={hasMore}
+        className={styles['no-overflow']}
         endMessage={<p>No more news for today!</p>}
         loader={
           <LoadingSpinnerMoonCraters
             className={styles['data__loading-spinner']}
           />
         }
+        pullDownToRefresh
+        pullDownToRefreshThreshold={50}
+        pullDownToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>
+            &#8595; Pull down to refresh
+          </h3>
+        }
+        releaseToRefreshContent={
+          <h3 style={{ textAlign: 'center' }}>
+            &#8593; Release to refresh
+          </h3>
+        }
+        refreshFunction={refreshData}
       >
         <ul className={styles.data__list}>
           {news.map((item) => (

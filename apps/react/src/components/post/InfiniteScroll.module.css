@@ -1,3 +1,6 @@
+.no-overflow {
+  overflow: initial !important;
+}
 .data {
   display: flex;
   flex-direction: column;
@@ -6,6 +9,7 @@
   .data__header {
     font-size: 2.5rem;
     border-block-end: 1px solid white;
+    margin-block-end: 1rem;
   }
   .data__list {
     display: flex;
