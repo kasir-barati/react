@@ -1,6 +1,8 @@
 import { News as PrismaNews } from '@prisma/client';
-import { PaginationWithSeekMethod } from './shared.type';
 
-export interface GetAllNewsQueryString
-  extends PaginationWithSeekMethod {}
+export interface GetAllNewsQueryString {
+  previousCreatedAt?: string;
+  nextCreatedAt?: string;
+  limit: number;
+}
 export type News = PrismaNews;

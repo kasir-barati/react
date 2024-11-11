@@ -1,0 +1,14 @@
+body {
+  padding-inline: 0;
+  padding-block: 0;
+}
+
+:root {
+  --root-gap: 0;
+}
+
+.messenger {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  block-size: 100vh;
+}

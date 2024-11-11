@@ -1,0 +1,78 @@
+.right-panel {
+  padding-inline: 1rem;
+  padding-block: 1rem;
+  background: url(/bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  block-size: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 1rem;
+
+  .history {
+    block-size: calc(100vh - 10rem);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-color) transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    > * {
+      inline-size: 70%;
+      padding-inline: 0.25rem;
+      padding-block: 0.25rem;
+      border-radius: var(--sm-border-radius);
+    }
+    .history__me {
+      background-color: rgba(64, 224, 208, 0.5);
+      font-family: monospace;
+      color: black;
+      align-self: flex-end;
+    }
+    .history__they {
+      background-color: rgba(123, 123, 123, 0.5);
+      align-self: flex-start;
+    }
+  }
+  .chat-box {
+    position: relative;
+
+    .chat-box__message {
+      border-radius: var(--sm-border-radius);
+      padding-inline: 0.5rem;
+      padding-block: 0.5rem;
+      font-size: 1.25rem;
+      font-family: monospace;
+      block-size: 6rem;
+      inline-size: 100%;
+      overflow-y: auto;
+      background-color: transparent;
+      border-inline: 0.0625rem solid white;
+      border-block: 0.0625rem solid white;
+      resize: none;
+      color: white;
+
+      &:focus-visible {
+        outline-style: none;
+      }
+    }
+    .chat-box__send-message {
+      padding-block: 0.5rem;
+      position: absolute;
+      inset-inline-end: 1rem;
+      inset-block-end: 1rem;
+      padding-inline: 1rem;
+      background-color: orangered;
+      cursor: pointer;
+      border-radius: var(--sm-border-radius);
+      transition: all 0.5s ease-out 0s;
+      font-weight: bold;
+
+      &:hover {
+        box-shadow: 2px 2px 0.5rem black;
+      }
+    }
+  }
+}

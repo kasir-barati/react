@@ -1,6 +1,10 @@
 # [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
 
-## WIP
+- A modern development technique.
+- Can detect when elements come into view.
+  - Elements into view? fetching data starts.
+- Observes changes in the intersection of target elements with, an ancestor element or the viewport.
+- Well-suited to implement infinite scrolling.
 
 You can make use of so called sentinel elements, where in your case since you need to fetch next and previous data, you'd mount the first and last element as a sentinel element with an Intersection Observer
 

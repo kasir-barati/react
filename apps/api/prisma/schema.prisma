@@ -30,3 +30,28 @@ model News {
 
   @@map("news_articles")
 }
+
+model User {
+  id               String    @id @default(uuid())
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  name             String
+  email            String    @unique
+  SentMessages     Message[] @relation("sender")
+  ReceivedMessages Message[] @relation("receiver")
+
+  @@map("users")
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  content    String
+  senderId   String   @map("sender_id")
+  Sender     User     @relation("sender", fields: [senderId], references: [id])
+  receiverId String   @map("receiver_id")
+  Receiver   User     @relation("receiver", fields: [receiverId], references: [id])
+
+  @@map("messages")
+}

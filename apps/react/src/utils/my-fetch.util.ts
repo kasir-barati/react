@@ -30,6 +30,7 @@ export async function myFetch<Response, QueryString = undefined>({
   }
 
   const data: Response = await response.json();
+  console.log(response, data);
 
   return data;
 }

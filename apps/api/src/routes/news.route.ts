@@ -4,10 +4,10 @@ import {
   PaginatedWithSeekMethod,
 } from '@react/common';
 import { Request, Router } from 'express';
+import { NewsRepository } from '../repositories/news.repository.js';
 import { Prisma } from '../utils/prisma.util.js';
-import { Repo } from '../utils/repo.util.js';
 
-const repo = new Repo(Prisma.prismaClient);
+const newsRepository = new NewsRepository(Prisma.prismaClient);
 
 export const newsRoutes = Router();
 
@@ -25,7 +25,7 @@ newsRoutes.get(
   ) => {
     const { previousCreatedAt, nextCreatedAt } = req.query;
     const limit = Number(req.query.limit);
-    const newsArticles = await repo.getNews({
+    const newsArticles = await newsRepository.getNews({
       previousCreatedAt,
       nextCreatedAt,
       limit,

@@ -2,7 +2,9 @@ import cors from 'cors';
 import express from 'express';
 import { join } from 'path';
 import { feedsRoutes } from './routes/feeds.route.js';
+import { messagesRoutes } from './routes/messages.route.js';
 import { newsRoutes } from './routes/news.route.js';
+import { usersRoutes } from './routes/users.route.js';
 import { getEnvVariables } from './utils/env-variable.util.js';
 
 const app = express();
@@ -14,6 +16,8 @@ app.use('/assets', express.static(join(__dirname, 'assets')));
 
 app.use('/news', newsRoutes);
 app.use('/feeds', feedsRoutes);
+app.use('/users', usersRoutes);
+app.use('/messages', messagesRoutes);
 
 app
   .listen(

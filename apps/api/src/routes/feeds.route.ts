@@ -4,10 +4,10 @@ import {
   PaginatedWithOffset,
 } from '@react/common';
 import { Request, Router } from 'express';
+import { FeedRepository } from '../repositories/feed.repository.js';
 import { Prisma } from '../utils/prisma.util.js';
-import { Repo } from '../utils/repo.util.js';
 
-using repo = new Repo(Prisma.prismaClient);
+using feedRepository = new FeedRepository(Prisma.prismaClient);
 
 export const feedsRoutes = Router();
 
@@ -25,7 +25,7 @@ feedsRoutes.get(
   ) => {
     const page = Number(req.query.page);
     const limit = Number(req.query.limit);
-    const feeds = await repo.getFeeds(page, limit);
+    const feeds = await feedRepository.getFeeds(page, limit);
     const response: PaginatedWithOffset<Feed> = {
       data: feeds,
       page,

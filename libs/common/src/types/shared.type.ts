@@ -11,8 +11,3 @@ export interface PaginatedWithSeekMethod<T> {
   data: T[];
   limit: number;
 }
-export interface PaginationWithSeekMethod {
-  previousCreatedAt?: string;
-  nextCreatedAt?: string;
-  limit: number;
-}

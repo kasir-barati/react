@@ -16,6 +16,7 @@
   --md-border-radius: 1rem;
   --text-color: white;
   --bg-color: #1f1f1f;
+  --root-gap: 2rem;
 }
 
 body {
@@ -35,7 +36,7 @@ body {
   #root {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--root-gap);
     inline-size: 100%;
   }
 }
