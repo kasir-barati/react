@@ -11,6 +11,9 @@ export class UserRepository {
         WHERE id = '${id}'`;
   }
 
+  /**
+   * @todo Enable user to search more freely instead of entering the exact name
+   */
   async getUsers(name: string): Promise<User[]> {
     const whereCondition = `%${name}%`;
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import {
   GetAllMessagesQueryString,
   Message,
@@ -19,7 +19,8 @@ export class MessageRepository {
       currentCreatedAt,
       currentMessageId,
     } = currentPage;
-    const { data, count } = await this.prismaClient.$queryRaw<{
+    const { count = 0, data = [] } = await this.prismaClient
+      .$queryRaw<{
       data: Message[];
       count: number;
     }>`SELECT
@@ -28,10 +29,14 @@ export class MessageRepository {
                FROM public.messages
                WHERE sender_id = '${senderId}'
                      AND receiver_id = '${receiverId}'
-                     ${currentCreatedAt ? `AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})` : ''}
+                     ${
+                       currentCreatedAt
+                         ? Prisma.sql`AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})`
+                         : Prisma.empty
+                     }
                GROUP BY created_at, id
                ORDER BY created_at DESC, id DESC
-               LIMIT ${limit}
+               LIMIT ${limit}::bigint
               ) AS count
         ),
         (SELECT JSONB_AGG(TO_JSONB(messages))
@@ -39,9 +44,13 @@ export class MessageRepository {
                FROM public.messages
                WHERE sender_id = '${senderId}'
                      AND receiver_id = '${receiverId}'
-                     ${currentCreatedAt ? `AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})` : ''}
+                     ${
+                       currentCreatedAt
+                         ? Prisma.sql`AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})`
+                         : Prisma.empty
+                     }
                ORDER BY created_at DESC, id DESC
-               LIMIT ${limit}
+               LIMIT ${limit}::bigint
               ) AS messages
         ) AS data`;
     const hasNextPage = Number.isFinite(count) && count !== 0;

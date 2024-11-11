@@ -78,11 +78,10 @@
         }
         .chat__radio-button {
           display: none;
-
-          &:checked {
-            outline: 0.0625rem solid red;
-          }
         }
+      }
+      .active {
+        outline: 0.0625rem solid red;
       }
     }
   }

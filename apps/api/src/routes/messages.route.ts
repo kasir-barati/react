@@ -12,7 +12,7 @@ export const messagesRoutes = Router();
 
 messagesRoutes.get(
   '/',
-  (
+  async (
     req: Request<
       unknown,
       unknown,
@@ -29,7 +29,7 @@ messagesRoutes.get(
       receiverId,
       senderId,
     } = req.query;
-    const response = messageRepository.getMessages({
+    const response = await messageRepository.getMessages({
       currentCreatedAt,
       currentMessageId,
       limit,

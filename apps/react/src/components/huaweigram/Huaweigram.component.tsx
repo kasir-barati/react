@@ -19,11 +19,7 @@ const me: User = {
 
 export function Huaweigram() {
   const [searchedName, setSearchedName] = useState('');
-  const {
-    error,
-    isLoading,
-    data: contacts,
-  } = useQuery({
+  const { error, data: contacts } = useQuery({
     queryKey: ['users', searchedName],
     enabled: searchedName.length > 0,
     queryFn: () =>
@@ -42,6 +38,10 @@ export function Huaweigram() {
   }
   const handleSearchUser = useCallback(
     (newName: string) => {
+      toast('Fetching ' + newName + '...', {
+        type: 'info',
+        autoClose: 3000,
+      });
       setSearchedName(newName);
     },
     [setSearchedName],
@@ -49,11 +49,7 @@ export function Huaweigram() {
 
   if (error) {
     console.error(error);
-  }
-
-  if (isLoading) {
-    toast('loading');
-    // show  maybe...
+    return <h1>{error.message}</h1>;
   }
 
   return (

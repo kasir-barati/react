@@ -1,5 +1,6 @@
 import MagnifyingGlassIcon from '@heroicons/react/24/outline/MagnifyingGlassIcon';
 import { User } from '@react/common';
+import classNames from 'classnames';
 import debounce from 'lodash.debounce';
 import { ChangeEvent, useCallback, useState } from 'react';
 import styles from './ContactList.module.css';
@@ -24,9 +25,18 @@ export function ContactList({
   );
   const listOfContacts = contacts.map((contact) => {
     const checked = selectedContact?.id === contact.id;
+    function handleClick() {
+      document.getElementById(contact.id)?.click();
+    }
 
     return (
-      <li key={contact.id} className={styles.chat}>
+      <li
+        key={contact.id}
+        onClick={handleClick}
+        className={classNames(styles.chat, {
+          [styles.active]: checked,
+        })}
+      >
         <img src="/avatar.png" className={styles.chat__avatar} />
         <label htmlFor={contact.id} className={styles.chat__name}>
           {contact.name}
