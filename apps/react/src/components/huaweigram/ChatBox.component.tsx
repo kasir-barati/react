@@ -6,6 +6,7 @@ import {
   User,
 } from '@react/common';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { DateTime } from 'luxon';
 import { ChangeEvent, useState } from 'react';
 import { toast } from 'react-toastify';
 import { myFetch } from '../../utils/my-fetch.util';
@@ -44,7 +45,7 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
       }),
   });
   const [message, setMessage] = useState<string>('');
-  const { mutate } = useMutation({
+  const { mutateAsync } = useMutation({
     mutationFn: (body: Readonly<CreateMessageDto>) =>
       myFetch<CreatedMessageDto, CreateMessageDto, CreateMessageDto>({
         endpoint: 'http://localhost:3333/messages',
@@ -64,8 +65,12 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     assertContact(contact);
 
     toast('Sending message...', { type: 'info' });
-    mutate({ content: message, receiverId: contact.id });
-    refetch();
+    mutateAsync({ content: message, receiverId: contact.id }).then(
+      () => {
+        // It is important to put this inside the then block, otherwise it would refetch sooner than creation and thus we would have a broken state in our frontend but OK in backend.
+        refetch();
+      },
+    );
     setMessage('');
   }
 
@@ -84,17 +89,34 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
           <section className={styles['history']}>
             {data &&
               data.pages.map(({ data: messages }) => {
-                return messages.map((message) => {
+                return [...messages].reverse().map((message) => {
+                  const createdAt = DateTime.fromISO(
+                    message.createdAt,
+                  ).toObject();
+
+                  console.log(message.content);
+
                   if (message.senderId === user.id) {
                     return (
-                      <p className={styles['history__me']}>
-                        My message
+                      <p
+                        key={message.id}
+                        className={styles['history__me']}
+                      >
+                        {message.content}
+                        <br />
+                        <time dateTime={message.createdAt}>
+                          {createdAt.month}.{createdAt.day} -{' '}
+                          {createdAt.hour}:{createdAt.minute}
+                        </time>
                       </p>
                     );
                   }
                   return (
-                    <p className={styles['history__they']}>
-                      Their message
+                    <p
+                      key={message.id}
+                      className={styles['history__they']}
+                    >
+                      {message.content}
                     </p>
                   );
                 });

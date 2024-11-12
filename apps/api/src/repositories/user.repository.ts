@@ -5,10 +5,14 @@ export class UserRepository {
   constructor(private readonly prismaClient: PrismaClient) {}
 
   async getUser(id: string): Promise<User> {
-    return this.prismaClient
-      .$queryRaw<User>`SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
+    const result = await this.prismaClient.$queryRaw<
+      User[]
+    >`SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
         FROM public.users
         WHERE id = '${id}'`;
+    const user = result[0];
+
+    return user;
   }
 
   /**
@@ -36,16 +40,24 @@ export class UserRepository {
     id?: string,
   ): Promise<User> {
     if (id) {
-      return this.prismaClient
-        .$queryRaw<User>`INSERT INTO public.users (id, created_at, updated_at, name, email)
+      const result = await this.prismaClient.$queryRaw<
+        User[]
+      >`INSERT INTO public.users (id, created_at, updated_at, name, email)
           VALUES (${id}, NOW(), NOW(), ${name}, ${email})
           RETURNING id, created_at as "createdAt", updated_at as "updatedAt", name, email`;
+      const user = result[0];
+
+      return user;
     }
 
-    return this.prismaClient
-      .$queryRaw<User>`INSERT INTO public.users (id, created_at, updated_at, name, email)
+    const result = this.prismaClient.$queryRaw<
+      User[]
+    >`INSERT INTO public.users (id, created_at, updated_at, name, email)
         VALUES (gen_random_uuid(), NOW(), NOW(), ${name}, ${email})
         RETURNING id, created_at as "createdAt", updated_at as "updatedAt", name, email`;
+    const user = result[0];
+
+    return user;
   }
 
   // https://github.com/tc39/proposal-explicit-resource-management

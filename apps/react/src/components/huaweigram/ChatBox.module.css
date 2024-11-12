@@ -30,6 +30,12 @@
       font-family: monospace;
       color: black;
       align-self: flex-end;
+
+      time {
+        display: block;
+        text-align: right;
+        font-family: system-ui;
+      }
     }
     .history__they {
       background-color: rgba(123, 123, 123, 0.5);

@@ -38,10 +38,12 @@ export class NewsRepository {
   }
 
   async createNews(newsTitle: string) {
-    const news = await this.prismaClient
-      .$queryRaw<News>`INSERT INTO public.news_articles(id, created_at, updated_at, title)
+    const result = await this.prismaClient.$queryRaw<
+      News[]
+    >`INSERT INTO public.news_articles(id, created_at, updated_at, title)
     VALUES(gen_random_uuid(), NOW(), NOW(), ${newsTitle})
     RETURNING *`;
+    const news = result[0];
 
     return news;
   }

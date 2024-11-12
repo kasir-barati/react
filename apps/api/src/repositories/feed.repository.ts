@@ -36,10 +36,12 @@ export class FeedRepository {
   }
 
   async createFeed(feedTitle: string) {
-    const feed = await this.prismaClient
-      .$queryRaw<Feed>`INSERT INTO public.feeds(id, created_at, updated_at, title)
+    const result = await this.prismaClient.$queryRaw<
+      Feed[]
+    >`INSERT INTO public.feeds(id, created_at, updated_at, title)
     VALUES(gen_random_uuid(), NOW(), NOW(), ${feedTitle})
     RETURNING *`;
+    const feed = result[0];
 
     return feed;
   }
