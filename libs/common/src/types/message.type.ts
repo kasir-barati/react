@@ -9,11 +9,18 @@ export interface GetAllMessagesQueryString {
 }
 export interface PaginatedWithSeekMethodGetMessages {
   data: Message[];
-  hasNextPage: boolean;
-  currentPage: GetAllMessagesQueryString;
+  nextPage?: GetAllMessagesQueryString;
 }
 export type Message = PrismaMessage;
 export interface CreateMessageDto {
   content: string;
   receiverId: string;
+}
+export interface CreatedMessageDto {
+  id: string;
+  content: string;
+  senderId: string;
+  receiverId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -19,43 +19,73 @@ export class MessageRepository {
       currentCreatedAt,
       currentMessageId,
     } = currentPage;
-    const { count = 0, data = [] } = await this.prismaClient
-      .$queryRaw<{
+    const {
+      nextPageCount = 0,
+      nextPageCursor,
+      data = [],
+    } = await this.prismaClient.$queryRaw<{
       data: Message[];
-      count: number;
-    }>`SELECT
-        (SELECT count.count
-         FROM (SELECT COUNT(id), created_at
-               FROM public.messages
-               WHERE sender_id = '${senderId}'
-                     AND receiver_id = '${receiverId}'
-                     ${
-                       currentCreatedAt
-                         ? Prisma.sql`AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})`
-                         : Prisma.empty
-                     }
-               GROUP BY created_at, id
-               ORDER BY created_at DESC, id DESC
-               LIMIT ${limit}::bigint
-              ) AS count
-        ),
+      nextPageCursor: { createdAt: string; id: string };
+      nextPageCount: number | null;
+    }>`
+    WITH filtered_messages AS (
+      SELECT id, sender_id AS "senderId", receiver_id AS "receiverId", created_at as "created_at", updated_at as "updatedAt", content
+      FROM public.messages
+      WHERE sender_id = ${senderId}
+            AND receiver_id = ${receiverId}
+            ${
+              currentCreatedAt
+                ? Prisma.sql`AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})`
+                : Prisma.empty
+            }
+      ORDER BY created_at DESC, id DESC
+      LIMIT ${limit}::bigint
+      ), last_filtered_message AS (
+        SELECT *
+        FROM filtered_messages
+        ORDER BY created_at ASC
+        LIMIT 1
+      ), next_page_count AS (
+        SELECT count.count
+        FROM (SELECT COUNT(public.messages.id), public.messages.created_at
+              FROM public.messages, last_filtered_message
+              WHERE public.messages.sender_id = ${senderId}
+                    AND public.messages.receiver_id = ${receiverId}
+                    AND (public.messages.created_at, public.messages.id) < (last_filtered_message.created_at, last_filtered_message.id)
+              GROUP BY public.messages.created_at, public.messages.id
+              ORDER BY public.messages.created_at DESC, public.messages.id DESC
+              LIMIT ${limit}::bigint
+             ) AS count
+      )
+      SELECT
         (SELECT JSONB_AGG(TO_JSONB(messages))
          FROM (SELECT *
-               FROM public.messages
-               WHERE sender_id = '${senderId}'
-                     AND receiver_id = '${receiverId}'
-                     ${
-                       currentCreatedAt
-                         ? Prisma.sql`AND (created_at, id) < (${currentCreatedAt}::timestamp, ${currentMessageId})`
-                         : Prisma.empty
-                     }
-               ORDER BY created_at DESC, id DESC
-               LIMIT ${limit}::bigint
-              ) AS messages
-        ) AS data`;
-    const hasNextPage = Number.isFinite(count) && count !== 0;
+               FROM filtered_messages
+              ) as messages
+        ) AS data,
+        (SELECT *
+         FROM next_page_count
+        ) AS nextPageCount,
+        (SELECT JSON_BUILD_OBJECT('createdAt', created_at, 'id', id)
+         FROM last_filtered_message
+        ) AS nextPageCursor`;
+    const hasNextPage =
+      Number.isFinite(nextPageCount) && nextPageCount !== 0;
 
-    return { data, hasNextPage, currentPage };
+    console.log(data, nextPageCursor, nextPageCount);
+
+    return {
+      data,
+      nextPage: hasNextPage
+        ? {
+            limit,
+            senderId,
+            receiverId,
+            currentMessageId: nextPageCursor.id,
+            currentCreatedAt: nextPageCursor.createdAt,
+          }
+        : undefined,
+    };
   }
 
   async createMessage(

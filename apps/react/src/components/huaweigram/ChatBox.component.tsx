@@ -1,9 +1,11 @@
 import {
+  CreatedMessageDto,
+  CreateMessageDto,
   GetAllMessagesQueryString,
   PaginatedWithSeekMethodGetMessages,
   User,
 } from '@react/common';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { ChangeEvent, useState } from 'react';
 import { toast } from 'react-toastify';
 import { myFetch } from '../../utils/my-fetch.util';
@@ -17,7 +19,7 @@ interface ChatBoxProps {
 const MESSAGE_FETCH_LIMIT = 10;
 
 export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
-  const { data, error, isLoading } = useInfiniteQuery({
+  const { data, error, isLoading, refetch } = useInfiniteQuery({
     queryKey: ['messages', contact?.id],
     enabled: Boolean(contact?.id),
     initialPageParam: {
@@ -31,7 +33,7 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     },
     getNextPageParam: (
       lastPage: PaginatedWithSeekMethodGetMessages,
-    ) => (lastPage.hasNextPage ? lastPage.currentPage : null),
+    ) => lastPage.nextPage,
     queryFn: ({ pageParam }) =>
       myFetch<
         PaginatedWithSeekMethodGetMessages,
@@ -41,7 +43,15 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         queryStrings: pageParam,
       }),
   });
-  const [message, setMessage] = useState<string>();
+  const [message, setMessage] = useState<string>('');
+  const { mutate } = useMutation({
+    mutationFn: (body: Readonly<CreateMessageDto>) =>
+      myFetch<CreatedMessageDto, CreateMessageDto, CreateMessageDto>({
+        endpoint: 'http://localhost:3333/messages',
+        method: 'put',
+        body,
+      }),
+  });
   function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setMessage(e.target.value);
   }
@@ -51,7 +61,12 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
       return;
     }
 
+    assertContact(contact);
+
     toast('Sending message...', { type: 'info' });
+    mutate({ content: message, receiverId: contact.id });
+    refetch();
+    setMessage('');
   }
 
   if (error) {
@@ -105,4 +120,10 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
       )}
     </section>
   );
+}
+
+function assertContact(contact?: User): asserts contact is User {
+  if (!contact) {
+    throw 'UndefinedContact';
+  }
 }
