@@ -54,9 +54,12 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
   });
   const [message, setMessage] = useState<string>('');
   const lastMessageRef = useRef<HTMLParagraphElement>(null);
+  const firstMessageRef = useRef<HTMLParagraphElement>(null);
   const messagesWrapperRef = useRef<HTMLElement>(null);
-  const [isLastMessageHidden, setIsLastMessageHidden] =
-    useState(false);
+  const [
+    isGoToLastMessageButtonHidden,
+    setIsGoToLastMessageButtonHidden,
+  ] = useState(false);
   const { mutateAsync } = useMutation({
     mutationFn: (body: Readonly<CreateMessageDto>) =>
       myFetch<CreatedMessageDto, CreateMessageDto, CreateMessageDto>({
@@ -127,9 +130,9 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
   }
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
+    const goToLastMessageObserver = new IntersectionObserver(
       ([entry]) => {
-        setIsLastMessageHidden(entry.isIntersecting);
+        setIsGoToLastMessageButtonHidden(entry.isIntersecting);
       },
       {
         root: messagesWrapperRef.current,
@@ -137,17 +140,36 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         threshold: 0.5,
       },
     );
-    if (lastMessageRef.current) {
-      // Hate this setTimeout but without it is gonna scroll too soon!
-      setTimeout(() => {
+    const loadMoreMessagesObserver = new IntersectionObserver(
+      ([entity]) => {
+        if (entity.isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: messagesWrapperRef.current,
+        rootMargin: '0px',
+        threshold: 0.5,
+      },
+    );
+
+    // Hate this setTimeout but without it is gonna scroll too soon!
+    setTimeout(() => {
+      if (lastMessageRef.current) {
         showLastMessage();
-      }, 100);
-      observer.observe(lastMessageRef.current);
-    }
+        goToLastMessageObserver.observe(lastMessageRef.current);
+      }
+      if (firstMessageRef.current) {
+        loadMoreMessagesObserver.observe(firstMessageRef.current);
+      }
+    }, 100);
 
     return () => {
       if (lastMessageRef.current) {
-        observer.unobserve(lastMessageRef.current);
+        goToLastMessageObserver.unobserve(lastMessageRef.current);
+      }
+      if (firstMessageRef.current) {
+        loadMoreMessagesObserver.unobserve(firstMessageRef.current);
       }
     };
   }, []);
@@ -160,10 +182,13 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     return <h1>Loading ...</h1>;
   }
 
-  // TODO: On scroll up fetch previous pages.
+  // Will it be a really heavy toll on the browser when I spread like this? I do not think.Because spread is a shallow copy and thus it is not a really heavy operation.
+  // Why I did that? because my backend returns the first page with the latest messages. And when you fetch the next page it will fetch older messages and so on and so forth.
   const messagesElements = data
-    ? data.pages
+    ? [...data.pages]
+        .reverse()
         .map(({ data: messages }, pageIndex) => {
+          // Why I reversed messages? Because messages are sorted from the most recent one to the oldest one.
           return [...messages].reverse().map((message) => {
             const createdAt = DateTime.fromISO(
               message.createdAt,
@@ -199,6 +224,11 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
             ref={messagesWrapperRef}
             className={styles['history']}
           >
+            <span
+              role="none"
+              className={styles.hide}
+              ref={firstMessageRef}
+            ></span>
             {messagesElements}
             <span
               role="none"
@@ -210,7 +240,7 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
               className={classNames(
                 styles['scroll-to-last-message'],
                 {
-                  [styles.hide]: isLastMessageHidden,
+                  [styles.hide]: isGoToLastMessageButtonHidden,
                 },
               )}
             >
