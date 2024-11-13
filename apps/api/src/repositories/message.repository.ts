@@ -43,13 +43,13 @@ export class MessageRepository {
       ), next_page_messages_ids AS (
         SELECT public.messages.id
         FROM public.messages, last_filtered_message
-        WHERE public.messages.sender_id = '754cf10b-d3a3-4851-af9a-11ad51dc8357'
-              AND public.messages.receiver_id = 'b9e0c6b9-4c7f-441f-b6cc-1cf6521c141b'
+        WHERE public.messages.sender_id = ${senderId}
+              AND public.messages.receiver_id = ${receiverId}
               AND (public.messages.created_at, public.messages.id) < (last_filtered_message."createdAt", last_filtered_message.id)
         ORDER BY public.messages.created_at DESC, public.messages.id DESC
-        LIMIT 10
+        LIMIT ${limit}::bigint
       ), next_page_count AS (
-        SELECT count(*)
+        SELECT count(*)::integer
         FROM next_page_messages_ids
       )
       SELECT
@@ -60,10 +60,10 @@ export class MessageRepository {
         ) AS data,
         (SELECT *
          FROM next_page_count
-        ) AS nextPageCount,
+        ) AS "nextPageCount",
         (SELECT JSON_BUILD_OBJECT('createdAt', "createdAt", 'id', id)
          FROM last_filtered_message
-        ) AS nextPageCursor`;
+        ) AS "nextPageCursor"`;
     const {
       nextPageCount = 0,
       nextPageCursor,
@@ -71,18 +71,19 @@ export class MessageRepository {
     } = result[0];
     const hasNextPage =
       Number.isFinite(nextPageCount) && nextPageCount !== 0;
+    const nextPage = hasNextPage
+      ? {
+          limit,
+          senderId,
+          receiverId,
+          currentMessageId: nextPageCursor.id,
+          currentCreatedAt: nextPageCursor.createdAt,
+        }
+      : undefined;
 
     return {
       data,
-      nextPage: hasNextPage
-        ? {
-            limit,
-            senderId,
-            receiverId,
-            currentMessageId: nextPageCursor.id,
-            currentCreatedAt: nextPageCursor.createdAt,
-          }
-        : undefined,
+      nextPage,
     };
   }
 
