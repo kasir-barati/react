@@ -54,6 +54,7 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
   });
   const [message, setMessage] = useState<string>('');
   const lastMessageRef = useRef<HTMLParagraphElement>(null);
+  const messagesWrapperRef = useRef<HTMLElement>(null);
   const [isLastMessageHidden, setIsLastMessageHidden] =
     useState(false);
   const { mutateAsync } = useMutation({
@@ -131,9 +132,9 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         setIsLastMessageHidden(entry.isIntersecting);
       },
       {
-        root: null,
+        root: messagesWrapperRef.current,
         rootMargin: '0px',
-        threshold: 0.1,
+        threshold: 0.5,
       },
     );
     if (lastMessageRef.current) {
@@ -194,7 +195,10 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     <section className={styles['right-panel']}>
       {contact && (
         <>
-          <section className={styles['history']}>
+          <section
+            ref={messagesWrapperRef}
+            className={styles['history']}
+          >
             {messagesElements}
             <span
               role="none"
