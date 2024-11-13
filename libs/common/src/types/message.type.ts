@@ -21,6 +21,6 @@ export interface CreatedMessageDto {
   content: string;
   senderId: string;
   receiverId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

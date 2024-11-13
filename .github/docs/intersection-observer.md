@@ -2,7 +2,7 @@
 
 - A modern development technique.
 - Can detect when elements come into view.
-  - Elements into view? fetching data starts.
+- E.g. when element comes into view start fetching data.
 - Observes changes in the intersection of target elements with, an ancestor element or the viewport.
 - Well-suited to implement infinite scrolling.
 

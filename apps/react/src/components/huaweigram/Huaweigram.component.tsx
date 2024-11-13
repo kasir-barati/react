@@ -38,9 +38,11 @@ export function Huaweigram() {
   }
   const handleSearchUser = useCallback(
     (newName: string) => {
+      // How can I get this taos to be displayed before I get the response back from my backend?
+      // I thought that since I am setting the searchedName state after the toast it will be shown first. But it seems like that ReactJS sets the state, then TanStack Query calls my API and receive a response but up until now react-toastify has had any chance to render a notification box!
       toast('Fetching ' + newName + '...', {
         type: 'info',
-        autoClose: 3000,
+        autoClose: 1000,
       });
       setSearchedName(newName);
     },
@@ -60,7 +62,7 @@ export function Huaweigram() {
         selectedContact={to}
         onSearchUser={handleSearchUser}
       />
-      <ChatBox key={to?.email} user={me} contact={to} />
+      <ChatBox key={to?.id} user={me} contact={to} />
     </article>
   );
 }
