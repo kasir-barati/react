@@ -20,7 +20,7 @@ export function ContactList({
 }: Readonly<ContactListProps>) {
   const [searchedContactName, setSearchedContactName] = useState('');
   const debouncedOnSearchUser = useCallback(
-    debounce((name: string) => onSearchUser(name), 3000),
+    debounce((name: string) => onSearchUser(name), 2000),
     [onSearchUser],
   );
   const listOfContacts = contacts.map((contact) => {
@@ -60,8 +60,16 @@ export function ContactList({
   });
 
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    setSearchedContactName(e.target.value);
-    debouncedOnSearchUser(e.target.value);
+    const normalizedValue = e.target.value.trim();
+
+    setSearchedContactName(normalizedValue);
+
+    if (e.target.value.length === 0) {
+      onSearchUser('');
+      return;
+    }
+
+    debouncedOnSearchUser(normalizedValue);
   }
 
   return (
