@@ -69,6 +69,7 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         method: 'put',
         body,
       }),
+    // https://stackoverflow.com/a/78662140/8784518
     onSuccess: (newMessage) => {
       queryClient.setQueryData(
         ['messages', contact?.id],
@@ -108,8 +109,15 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     assertContact(contact);
 
     toast('Sending message...', { type: 'info' });
-    mutateAsync({ content: message, receiverId: contact.id });
-    setMessage('');
+    mutateAsync({ content: message, receiverId: contact.id }).then(
+      () => {
+        setMessage('');
+        // Do not like this setTimeout. BUt I have to have it since it takes some time to paint the messages list on screen.
+        setTimeout(() => {
+          showLastMessage();
+        }, 1000);
+      },
+    );
   }
   function handleClickScrollToLastMessage() {
     showLastMessage();
@@ -155,10 +163,6 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
   }
   if (isLoading) {
     return <h1>Loading ...</h1>;
-  }
-
-  if (data) {
-    console.log(data.pages);
   }
 
   // TODO: On scroll up fetch previous pages.
