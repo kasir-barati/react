@@ -12,13 +12,7 @@ import {
 } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { DateTime } from 'luxon';
-import {
-  ChangeEvent,
-  DetailedHTMLProps,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { getQueryClient } from '../../utils/get-query-client.util';
 import { myFetch } from '../../utils/my-fetch.util';
@@ -112,10 +106,10 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     mutateAsync({ content: message, receiverId: contact.id }).then(
       () => {
         setMessage('');
-        // Do not like this setTimeout. BUt I have to have it since it takes some time to paint the messages list on screen.
+        // Hate this setTimeout but without it is gonna scroll too soon!
         setTimeout(() => {
           showLastMessage();
-        }, 1000);
+        }, 100);
       },
     );
   }
@@ -139,22 +133,22 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
       {
         root: null,
         rootMargin: '0px',
-        threshold: 0.5,
+        threshold: 0.1,
       },
     );
-    // Do not like this setTimeout. BUt I have to have it since it takes some time to paint the messages list on screen.
-    setTimeout(() => {
-      if (lastMessageRef.current) {
+    if (lastMessageRef.current) {
+      // Hate this setTimeout but without it is gonna scroll too soon!
+      setTimeout(() => {
         showLastMessage();
-        observer.observe(lastMessageRef.current);
-      }
+      }, 100);
+      observer.observe(lastMessageRef.current);
+    }
 
-      return () => {
-        if (lastMessageRef.current) {
-          observer.unobserve(lastMessageRef.current);
-        }
-      };
-    }, 1000);
+    return () => {
+      if (lastMessageRef.current) {
+        observer.unobserve(lastMessageRef.current);
+      }
+    };
   }, []);
 
   if (error) {
@@ -169,53 +163,29 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
   const messagesElements = data
     ? data.pages
         .map(({ data: messages }, pageIndex) => {
-          return [...messages]
-            .reverse()
-            .map((message, messageIndex) => {
-              const createdAt = DateTime.fromISO(
-                message.createdAt,
-              ).toObject();
-              const commonProps: DetailedHTMLProps<
-                React.HTMLAttributes<HTMLParagraphElement>,
-                HTMLParagraphElement
-              > = {};
+          return [...messages].reverse().map((message) => {
+            const createdAt = DateTime.fromISO(
+              message.createdAt,
+            ).toObject();
 
-              if (
-                isLastMessage(
-                  pageIndex,
-                  messageIndex,
-                  messages.length,
-                )
-              ) {
-                commonProps.ref = lastMessageRef;
-              }
-
-              if (message.senderId === user.id) {
-                return (
-                  <p
-                    {...commonProps}
-                    key={message.id}
-                    className={styles['history__me']}
-                  >
-                    {message.content}
-                    <br />
-                    <time dateTime={message.createdAt}>
-                      {createdAt.month}.{createdAt.day} -{' '}
-                      {createdAt.hour}:{createdAt.minute}
-                    </time>
-                  </p>
-                );
-              }
+            if (message.senderId === user.id) {
               return (
-                <p
-                  {...commonProps}
-                  key={message.id}
-                  className={styles['history__they']}
-                >
+                <p key={message.id} className={styles['history__me']}>
                   {message.content}
+                  <br />
+                  <time dateTime={message.createdAt}>
+                    {createdAt.month}.{createdAt.day} -{' '}
+                    {createdAt.hour}:{createdAt.minute}
+                  </time>
                 </p>
               );
-            });
+            }
+            return (
+              <p key={message.id} className={styles['history__they']}>
+                {message.content}
+              </p>
+            );
+          });
         })
         .flat()
     : undefined;
@@ -226,6 +196,11 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         <>
           <section className={styles['history']}>
             {messagesElements}
+            <span
+              role="none"
+              className={styles.hide}
+              ref={lastMessageRef}
+            ></span>
             <button
               onClick={handleClickScrollToLastMessage}
               className={classNames(
