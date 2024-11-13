@@ -2,9 +2,28 @@
 
 - A modern development technique.
 - Can detect when elements come into view.
-- E.g. when element comes into view start fetching data.
-- Observes changes in the intersection of target elements with, an ancestor element or the viewport.
+- Observes changes in the **intersection** of target elements with, an ancestor element or the [viewport](https://github.com/kasir-barati/html-css/tree/main/14-box-model#viewportDefinitionInOneSentence):
+
+  - Intersection refers to **the overlap area between a target element and another element** (called the "root").
+
+    ![Overlap area](./assets/target-root-overlap-area.png)
+
+  - Intersection is used as a reference for observing the target.
+
+    ![Threshold is used as a reference for observing the target](./assets/intersection-thresholds.png)
+
+  - Target: the element we wanna observe.
+  - Root is either:
+    - An ancestor element.
+    - The document's viewport.
+
 - Well-suited to implement infinite scrolling.
+
+- When element comes into view it will call the callback passed to it.
+
+  ![Threshold infographic](./assets/threshold-intricacies.png)
+
+# Nesha's comments
 
 You can make use of so called sentinel elements, where in your case since you need to fetch next and previous data, you'd mount the first and last element as a sentinel element with an Intersection Observer
 
@@ -165,3 +184,8 @@ const Component = () => {
   );
 };
 ```
+
+# Other resources to use
+
+- https://www.youtube.com/watch?v=aMfBeXD_rnE.
+- https://www.youtube.com/watch?v=dw6e__jo6-M&t=144s.
