@@ -5,12 +5,26 @@ import {
   PaginatedWithSeekMethodGetMessages,
   User,
 } from '@react/common';
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  useMutation,
+} from '@tanstack/react-query';
+import classNames from 'classnames';
 import { DateTime } from 'luxon';
-import { ChangeEvent, useState } from 'react';
+import {
+  ChangeEvent,
+  DetailedHTMLProps,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'react-toastify';
+import { getQueryClient } from '../../utils/get-query-client.util';
 import { myFetch } from '../../utils/my-fetch.util';
 import styles from './ChatBox.module.css';
+
+const queryClient = getQueryClient();
 
 interface ChatBoxProps {
   contact?: User;
@@ -20,7 +34,7 @@ interface ChatBoxProps {
 const MESSAGE_FETCH_LIMIT = 10;
 
 export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
-  const { data, error, isLoading, refetch } = useInfiniteQuery({
+  const { data, error, isLoading, fetchNextPage } = useInfiniteQuery({
     queryKey: ['messages', contact?.id],
     enabled: Boolean(contact?.id),
     initialPageParam: {
@@ -45,6 +59,9 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
       }),
   });
   const [message, setMessage] = useState<string>('');
+  const lastMessageRef = useRef<HTMLParagraphElement>(null);
+  const [isLastMessageHidden, setIsLastMessageHidden] =
+    useState(false);
   const { mutateAsync } = useMutation({
     mutationFn: (body: Readonly<CreateMessageDto>) =>
       myFetch<CreatedMessageDto, CreateMessageDto, CreateMessageDto>({
@@ -52,6 +69,32 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
         method: 'put',
         body,
       }),
+    onSuccess: (newMessage) => {
+      queryClient.setQueryData(
+        ['messages', contact?.id],
+        (
+          oldMessages: InfiniteData<
+            PaginatedWithSeekMethodGetMessages,
+            unknown
+          >,
+        ) => {
+          const firstPage = oldMessages?.pages[0];
+
+          if (firstPage) {
+            return {
+              ...oldMessages,
+              pages: [
+                {
+                  ...firstPage,
+                  data: [newMessage, ...firstPage.data],
+                } satisfies PaginatedWithSeekMethodGetMessages,
+                ...oldMessages.pages.slice(1),
+              ],
+            };
+          }
+        },
+      );
+    },
   });
   function handleChange(e: ChangeEvent<HTMLTextAreaElement>) {
     setMessage(e.target.value);
@@ -65,14 +108,46 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     assertContact(contact);
 
     toast('Sending message...', { type: 'info' });
-    mutateAsync({ content: message, receiverId: contact.id }).then(
-      () => {
-        // It is important to put this inside the then block, otherwise it would refetch sooner than creation and thus we would have a broken state in our frontend but OK in backend.
-        refetch();
-      },
-    );
+    mutateAsync({ content: message, receiverId: contact.id });
     setMessage('');
   }
+  function handleClickScrollToLastMessage() {
+    showLastMessage();
+  }
+  function showLastMessage() {
+    if (isLastMessageElement(lastMessageRef.current)) {
+      lastMessageRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    }
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsLastMessageHidden(entry.isIntersecting);
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5,
+      },
+    );
+    // Do not like this setTimeout. BUt I have to have it since it takes some time to paint the messages list on screen.
+    setTimeout(() => {
+      if (lastMessageRef.current) {
+        showLastMessage();
+        observer.observe(lastMessageRef.current);
+      }
+
+      return () => {
+        if (lastMessageRef.current) {
+          observer.unobserve(lastMessageRef.current);
+        }
+      };
+    }, 1000);
+  }, []);
 
   if (error) {
     console.log(error);
@@ -82,45 +157,82 @@ export function ChatBox({ contact, user }: Readonly<ChatBoxProps>) {
     return <h1>Loading ...</h1>;
   }
 
+  if (data) {
+    console.log(data.pages);
+  }
+
+  // TODO: On scroll up fetch previous pages.
+  const messagesElements = data
+    ? data.pages
+        .map(({ data: messages }, pageIndex) => {
+          return [...messages]
+            .reverse()
+            .map((message, messageIndex) => {
+              const createdAt = DateTime.fromISO(
+                message.createdAt,
+              ).toObject();
+              const commonProps: DetailedHTMLProps<
+                React.HTMLAttributes<HTMLParagraphElement>,
+                HTMLParagraphElement
+              > = {};
+
+              if (
+                isLastMessage(
+                  pageIndex,
+                  messageIndex,
+                  messages.length,
+                )
+              ) {
+                commonProps.ref = lastMessageRef;
+              }
+
+              if (message.senderId === user.id) {
+                return (
+                  <p
+                    {...commonProps}
+                    key={message.id}
+                    className={styles['history__me']}
+                  >
+                    {message.content}
+                    <br />
+                    <time dateTime={message.createdAt}>
+                      {createdAt.month}.{createdAt.day} -{' '}
+                      {createdAt.hour}:{createdAt.minute}
+                    </time>
+                  </p>
+                );
+              }
+              return (
+                <p
+                  {...commonProps}
+                  key={message.id}
+                  className={styles['history__they']}
+                >
+                  {message.content}
+                </p>
+              );
+            });
+        })
+        .flat()
+    : undefined;
+
   return (
     <section className={styles['right-panel']}>
       {contact && (
         <>
           <section className={styles['history']}>
-            {data &&
-              data.pages.map(({ data: messages }) => {
-                return [...messages].reverse().map((message) => {
-                  const createdAt = DateTime.fromISO(
-                    message.createdAt,
-                  ).toObject();
-
-                  console.log(message.content);
-
-                  if (message.senderId === user.id) {
-                    return (
-                      <p
-                        key={message.id}
-                        className={styles['history__me']}
-                      >
-                        {message.content}
-                        <br />
-                        <time dateTime={message.createdAt}>
-                          {createdAt.month}.{createdAt.day} -{' '}
-                          {createdAt.hour}:{createdAt.minute}
-                        </time>
-                      </p>
-                    );
-                  }
-                  return (
-                    <p
-                      key={message.id}
-                      className={styles['history__they']}
-                    >
-                      {message.content}
-                    </p>
-                  );
-                });
-              })}
+            {messagesElements}
+            <button
+              onClick={handleClickScrollToLastMessage}
+              className={classNames(
+                styles['scroll-to-last-message'],
+                {
+                  [styles.hide]: isLastMessageHidden,
+                },
+              )}
+            >
+              &darr;
+            </button>
           </section>
           <form className={styles['chat-box']}>
             <textarea
@@ -148,4 +260,16 @@ function assertContact(contact?: User): asserts contact is User {
   if (!contact) {
     throw 'UndefinedContact';
   }
+}
+function isLastMessage(
+  pageIndex: number,
+  messageIndex: number,
+  messagesLength: number,
+) {
+  return pageIndex === 0 && messageIndex === messagesLength - 1;
+}
+function isLastMessageElement(
+  lastMessageElement: HTMLParagraphElement | null,
+): lastMessageElement is HTMLParagraphElement {
+  return Boolean(lastMessageElement);
 }

@@ -1,13 +1,11 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { Bounce, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Huaweigram } from '../components/huaweigram/Huaweigram.component';
+import { getQueryClient } from '../utils/get-query-client.util';
 import styles from './app.module.css';
 
-const queryClient = new QueryClient();
+const queryClient = getQueryClient();
 
 export function App() {
   return (
