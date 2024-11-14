@@ -1,3 +1,12 @@
+# TODO
+
+- https://blog.logrocket.com/infinite-scrolling-react.
+- https://blog.logrocket.com/how-and-when-to-debounce-or-throttle-in-react.
+- https://blog.logrocket.com/getting-started-react-18-starttransition.
+- https://react.dev/reference/react/Suspense.
+- https://nextjs.org/learn/dashboard-app.
+- https://hypermedia.systems/book/contents.
+
 # Table of content
 
 - [Better ReactJS App](./docs/better-reactjs-app.md).
