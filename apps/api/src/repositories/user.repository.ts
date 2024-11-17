@@ -21,17 +21,19 @@ export class UserRepository {
   async getUsers(name: string): Promise<User[]> {
     const whereCondition = `%${name}%`;
 
+    // Exact match which works but is not what I want.
     /**
      `SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
       FROM public.users
-      WHERE name ILIKE '${whereCondition}'`;
+      WHERE name = ${name}`
      */
 
+    // ILIKE does not work!
     return this.prismaClient.$queryRaw<
       User[]
     >`SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
       FROM public.users
-      WHERE name = ${name}`;
+      WHERE name ILIKE ${`%${name}%`}`;
   }
 
   async createUser(

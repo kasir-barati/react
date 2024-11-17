@@ -3,8 +3,8 @@ import {
   GetAllMessagesQueryString,
 } from '@react/common';
 import { Request, Router } from 'express';
-import { MessageRepository } from '../repositories/message.repository';
-import { Prisma } from '../utils/prisma.util';
+import { MessageRepository } from '../repositories/message.repository.js';
+import { Prisma } from '../utils/prisma.util.js';
 
 using messageRepository = new MessageRepository(Prisma.prismaClient);
 

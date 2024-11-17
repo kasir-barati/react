@@ -1,7 +1,7 @@
 import { FilterUsersQueryString } from '@react/common';
 import { Request, Router } from 'express';
-import { UserRepository } from '../repositories/user.repository';
-import { Prisma } from '../utils/prisma.util';
+import { UserRepository } from '../repositories/user.repository.js';
+import { Prisma } from '../utils/prisma.util.js';
 
 using userRepository = new UserRepository(Prisma.prismaClient);
 

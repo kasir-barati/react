@@ -12,6 +12,7 @@
   ],
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["esnext.disposable"]
+    "lib": ["esnext.disposable"],
+    "module": "NodeNext"
   }
 }
