@@ -1,10 +1,10 @@
 # Table of content
 
-- [Better ReactJS App](./.github/docs/better-reactjs-app.md).
-- [Components in ReactJS](./.github/docs/components.md).
-- [Events](./.github/docs/events.md).
-- [Fetching data](./.github/docs/fetching-data.md).
-- [Glossary](./.github/docs/glossary.md).
-- [ReactJS hooks](./.github/docs/hooks.md).
-- [JSX](./.github/docs/jsx.md).
-- [States in ReactJS](./.github/docs/state.md).
+- [Better ReactJS App](./docs/better-reactjs-app.md).
+- [Components in ReactJS](./docs/components.md).
+- [Events](./docs/events.md).
+- [Fetching data](./docs/fetching-data.md).
+- [Glossary](./docs/glossary.md).
+- [ReactJS hooks](./docs/hooks.md).
+- [JSX](./docs/jsx.md).
+- [States in ReactJS](./docs/state.md).
