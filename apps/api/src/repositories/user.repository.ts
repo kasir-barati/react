@@ -19,16 +19,6 @@ export class UserRepository {
    * @todo Enable user to search more freely instead of entering the exact name
    */
   async getUsers(name: string): Promise<User[]> {
-    const whereCondition = `%${name}%`;
-
-    // Exact match which works but is not what I want.
-    /**
-     `SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
-      FROM public.users
-      WHERE name = ${name}`
-     */
-
-    // ILIKE does not work!
     return this.prismaClient.$queryRaw<
       User[]
     >`SELECT id, created_at as "createdAt", updated_at as "updatedAt", name, email
@@ -45,14 +35,14 @@ export class UserRepository {
       const result = await this.prismaClient.$queryRaw<
         User[]
       >`INSERT INTO public.users (id, created_at, updated_at, name, email)
-          VALUES (${id}, NOW(), NOW(), ${name}, ${email})
-          RETURNING id, created_at as "createdAt", updated_at as "updatedAt", name, email`;
+      VALUES (${id}, NOW(), NOW(), ${name}, ${email})
+      RETURNING id, created_at as "createdAt", updated_at as "updatedAt", name, email`;
       const user = result[0];
 
       return user;
     }
 
-    const result = this.prismaClient.$queryRaw<
+    const result = await this.prismaClient.$queryRaw<
       User[]
     >`INSERT INTO public.users (id, created_at, updated_at, name, email)
         VALUES (gen_random_uuid(), NOW(), NOW(), ${name}, ${email})
